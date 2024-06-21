@@ -30,7 +30,7 @@ const Tables = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/branch/get")
+    axios.get("http://localhost:5000/api/branch/get")
       .then((res) => {
         setBranch(res.data.branch);
       })
@@ -48,7 +48,7 @@ const Tables = () => {
     };
 
     const handleEdit = () => {
-      axios.put(`http://localhost:5001/api/branch/update/${newBranch._id}`, newBranch)
+      axios.put(`http://localhost:5000/api/branch/update/${newBranch._id}`, newBranch)
         .then((res) => {
           if (res.data.success) {
             alert("Branch updated successfully");
