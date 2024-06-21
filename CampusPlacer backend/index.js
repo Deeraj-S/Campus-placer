@@ -1,5 +1,8 @@
 const connectToMongo = require("./db")
+const env = require('dotenv');
 const express = require("express")
+const cors =require('cors');
+env.config()
 
 
 
@@ -7,6 +10,8 @@ connectToMongo()
 
 
 const app = express()
+app.use(cors())
+app.use(express.json())
 
 app.get("/", (req, res) => {
     res.send("Campus Placer")
