@@ -1,42 +1,36 @@
-const connectToMongo = require("./db")
+const ConnectMongo =require('./db');
 const env = require('dotenv');
-const express = require("express")
+const studentSchema = require('./models/student');
+const facultySchema = require('./models/faculty');
 const cors =require('cors');
 env.config()
 
+ConnectMongo()
 
-
-connectToMongo()
-
-
-const app = express()
+const express = require('express');
+const app =express()
 app.use(cors())
 app.use(express.json())
 
-app.get("/", (req, res) => {
-    res.send("Campus Placer")
-
+app.get("/ab",(req,res)=>{
+    console.log("this is ab API")
+    res.send("this is output")
 })
-
 app.use('/api/upload',express.static("./uploads"))
-app.use("api/admin", require("./routes/adminRoutes"))
-app.use("api/hod", require("./routes/hodRoutes"))
-app.use("api/student", require("./routes/studentRoutes"))
-app.use("api/placement", require("./routes/placementRoutes"))
-app.use("api/application", require("./routes/jobApplicationRoutes"))
-app.use("api/branch", require("./routes/branchRoutes"))
-app.use("api/category", require("./routes/categoryRoutes"))
-app.use("api/joblist", require("./routes/joblistRoutes"))
+app.use("/api/user", require('./Routes/userRoutes'))
+app.use("/api/admin",require('./Routes/adminRoutes'))
+app.use("/api/manager",require('./Routes/managerRoutes'))
+app.use("/api/student",require('./Routes/studentRoutes'))
+app.use("/api/faculty",require('./Routes/facultyRoutes'))
+app.use("/api/product",require('./Routes/productRoutes'))
+app.use("/api/category",require('./Routes/categoryRoutes'))
+app.use("/api/hod",require('./Routes/hodRoutes'))
+app.use("/api/branch",require('./Routes/branchRoutes'))
+
+//app.use(cors({origin:"http://localhost:3000",methods:["GET","POST"]}))
 
 
 
-
-
-
-app.listen(process.env.PORT, () => {
-    console.log(`App is listening to port: ${process.env.PORT}`)
+app.listen(process.env.PORT,()=>{
+    console.log("app listening on PORT:"+process.env.PORT)
 })
-
-
-
-

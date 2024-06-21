@@ -1,4 +1,4 @@
-const branchSchema = require('../models/branchSchema')
+const branchSchema = require('../models/branch')
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const env = require('dotenv')

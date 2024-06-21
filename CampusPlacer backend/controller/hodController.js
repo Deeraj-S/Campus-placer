@@ -1,4 +1,4 @@
-const hodSchema = require('../models/hodSchema')
+const hodSchema = require('../models/hod')
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const env = require('dotenv')

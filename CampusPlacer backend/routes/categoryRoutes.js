@@ -1,9 +1,9 @@
-const express = require("express")
+const express= require('express');
+const {insert,Get}= require('../controller/categoryController');
+const { Update, Delete } = require('../controller/admincontroller');
 const routes = express.Router()
-
-routes.post("insert")
-routes.get("retrive")
-routes.put("update/:id")
-routes.delete("delete/:id")
-
-module.exports = routes
+routes.put("/insert",insert)
+routes.get("/get",Get)
+routes.put("/update/:id",Update)
+routes.delete("/delete/:id",Delete)
+module.exports=routes
