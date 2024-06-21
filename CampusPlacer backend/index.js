@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 
 })
 
-
+app.use('/api/upload',express.static("./uploads"))
 app.use("api/admin", require("./routes/adminRoutes"))
 app.use("api/hod", require("./routes/hodRoutes"))
 app.use("api/student", require("./routes/studentRoutes"))

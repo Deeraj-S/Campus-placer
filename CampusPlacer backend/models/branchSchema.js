@@ -3,18 +3,20 @@ const { Schema } = mongoose
 
 const branchSchema = new Schema({
     branch_name: {
-        type: String,
-        required: true,
+        type:String,
+        required:true
 
     },
     b_status: {
-        type: String,
-        required: true,
+        type:String,
+        default:"Active"
+        
 
     },
     b_date: {
-        type: Date,
-        required: true,
+        type:Date,
+        default:Date.now
+
     }
 })
 
