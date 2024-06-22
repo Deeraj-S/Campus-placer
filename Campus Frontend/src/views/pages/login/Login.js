@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -15,8 +15,53 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import axios from 'axios'
 
 const Login = () => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/')
+    }
+  }, [navigate])
+
+  const [login_details, setLogin_details] = useState({
+    email: '',
+    password: ''
+  })
+
+  const handleChange = (e) => {
+    setLogin_details({ ...login_details, [e.target.name]: e.target.value })
+  }
+  console.log(login_details)
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    axios.post("http://localhost:5000/api/admin/login", login_details)
+      .then((res) => {
+        console.log(res)
+        if (res.data.success) {
+          let token = res.data.token
+          let role = res.data.role
+          localStorage.setItem("token", JSON.stringify(token))
+          localStorage.setItem("role", JSON.stringify(role))
+          navigate('/')
+        }
+        else {
+          alert(res.data.message)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+
+      })
+
+  }
+
+
+
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -32,21 +77,17 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput type='email' name="email" placeholder="Enter your Email" onChange={handleChange} autoComplete="username" />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
-                      <CFormInput
-                        type="password"
-                        placeholder="Password"
-                        autoComplete="current-password"
-                      />
+                      <CFormInput type="password" name='password' placeholder="Enter your Password" onChange={handleChange} autoComplete="current-password" />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" onClick={handleSubmit}>
                           Login
                         </CButton>
                       </CCol>
@@ -57,22 +98,6 @@ const Login = () => {
                       </CCol>
                     </CRow>
                   </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
                 </CCardBody>
               </CCard>
             </CCardGroup>
