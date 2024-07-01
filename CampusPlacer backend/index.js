@@ -1,8 +1,7 @@
 const ConnectMongo =require('./db');
 const env = require('dotenv');
-const studentSchema = require('./models/student');
-const facultySchema = require('./models/faculty');
 const cors =require('cors');
+const path = require('path')
 env.config()
 
 ConnectMongo()
@@ -16,16 +15,16 @@ app.get("/ab",(req,res)=>{
     console.log("this is ab API")
     res.send("this is output")
 })
-app.use('/api/upload',express.static("./uploads"))
-app.use("/api/user", require('./Routes/userRoutes'))
+
+app.use('/api/upload/',express.static("./uploads"))
+app.use('/api/upload/photo',express.static("./uploads/photos"))
+app.use('/api/upload/resume',express.static("./uploads/resume"))
+
 app.use("/api/admin",require('./Routes/adminRoutes'))
-app.use("/api/manager",require('./Routes/managerRoutes'))
-app.use("/api/student",require('./Routes/studentRoutes'))
-app.use("/api/faculty",require('./Routes/facultyRoutes'))
-app.use("/api/product",require('./Routes/productRoutes'))
 app.use("/api/category",require('./Routes/categoryRoutes'))
 app.use("/api/hod",require('./Routes/hodRoutes'))
 app.use("/api/branch",require('./Routes/branchRoutes'))
+app.use("/api/student", require('./Routes/studentRoutes'))
 
 //app.use(cors({origin:"http://localhost:3000",methods:["GET","POST"]}))
 

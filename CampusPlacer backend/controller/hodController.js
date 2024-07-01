@@ -108,11 +108,7 @@ const Update = async (req, res) => {
             if (branch_id) { newData.branch_id = branch_id }
             if (h_photo) { newData.h_photo = h_photo }
         
-            if (h_password) {
-                const salt = await bcryptjs.genSalt(10)
-                const secpass = await bcryptjs.hash(h_password, salt)
-                {newData.h_password = secpass}
-            }
+            
             const UpdatedData = await hodSchema.findByIdAndUpdate(id, { $set: newData }, { new: true });
             return res.json({ success: true, UpdatedData })
         }

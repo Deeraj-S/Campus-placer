@@ -1,17 +1,18 @@
 const mongoose= require('mongoose')
 const {Schema} = mongoose
 const categorySchema = new Schema({
-    ctitle:{
+    j_category:{
         type:String,
         require:true
     },
-    date:{
+    j_date:{
         type:Date,
         default:Date.now
 
     },
-    status:{
+    j_status:{
         type:String,
+        default:"Active"
 
     }
 })

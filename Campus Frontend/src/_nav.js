@@ -15,9 +15,9 @@ import {
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
-let role = JSON.parse(localStorage.getItem('role'))
+// let role = JSON.parse(localStorage.getItem('role'))
 
-const _nav = role == "admin" ? [
+const _nav =  [
   {
     component: CNavItem,
     name: 'Dashboard',
@@ -38,6 +38,12 @@ const _nav = role == "admin" ? [
     component: CNavItem,
     name: 'Hod',
     to: '/Hod',
+    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Student',
+    to: '/student',
     icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   },
 
@@ -328,43 +334,10 @@ const _nav = role == "admin" ? [
     href: 'https://coreui.io/react/docs/templates/installation/',
     icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
   },
-] : role == "hod" ? [
-  {
-    component: CNavItem,
-    name: 'Hod Dashboard',
-    to: '/',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
-  },
-
-
-] : role == "placement_officer" ? [
-  {
-    component: CNavItem,
-    name: 'Placement Dashboard',
-    to: '/',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
-  },
-
-] : [
-  {
-    component: CNavItem,
-    name: 'Student Dashboard',
-    to: '/',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
-  },
-
 ]
+  
+
+
+
 
 export default _nav

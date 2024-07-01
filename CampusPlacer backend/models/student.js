@@ -1,46 +1,56 @@
-const mongoose=require('mongoose');
-const {Schema}=mongoose;
-const studentSchema = new Schema({
-    name:{
+const mongoose = require("mongoose")
+const { Schema } = mongoose
+
+studentSchema = new Schema({
+    s_name: {
         type:String,
         require:true
+
     },
-    regno:{
-        type:Number,
-        require:true
+    s_phone: {
+        type:Number
+
     },
-    email:{
+    s_address: {
         type:String,
         require:true
+
     },
-    phone:{
-        type:Number,
-        require:true
-    },
-    password:{
+    s_email: {
         type:String,
         require:true
+
     },
-    address:{
+    s_password: {
         type:String,
         require:true
+
     },
-    course:{
+    register_no: {
         type:String,
         require:true
+
     },
-    dob:{
-        type:Date,
-        require:true
+    branch_id: {
+        type:mongoose.Types.ObjectId,
+        ref:"branch"
+
     },
-    gender:{
+    hod_id: {
+        type:mongoose.Types.ObjectId,
+        ref:"hod"
+        
+    },
+    s_photo: {
         type:String,
         require:true
+
     },
-    fid:{
-        type: mongoose.Types.ObjectId, // Correctly reference mongoose.Types.ObjectId
-        ref: "faculty"
+    s_resume: {
+        type:String,
+        require:true
+
     }
-    
+
 })
 module.exports=mongoose.model("student",studentSchema)

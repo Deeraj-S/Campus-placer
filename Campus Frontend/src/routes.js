@@ -58,10 +58,12 @@ const Category = React.lazy(() => import('./views/category/Category.js'))
 const CategoryInsert = React.lazy(() => import('./views/category/Insert.js'))
 const Branch = React.lazy(()=> import('./views/branch/Branch.js'))
 const BranchInsert = React.lazy(()=>import('./views/branch/Insert.js'))
+const student = React.lazy(()=> import('./views/student/student.js'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   // ch
+  { path: '/student', name: 'Student', element: student },
   { path: '/hod', name: 'Hod', element: Hod },
   { path: '/hod/insert', name: 'Insert', element: HodInsert },
 

@@ -20,11 +20,11 @@ const FormControl = () => {
     let nav = useNavigate()
     const handleSubmit=(e)=>{
         e.preventDefault()
-        axios.put("http://localhost:5000/api/category/insert",{ctitle:category})
+        axios.post("http://localhost:5001/api/category/insert",{j_category:category})
         .then((res)=>{
             console.log(res)
             if(res.data.success){
-                alert("category added")
+                alert("job category added")
                 nav("/category")
             }else{
                 alert(res.data.message)
@@ -45,14 +45,15 @@ const FormControl = () => {
           <CCardBody>         
               <CForm onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <CFormLabel htmlFor="ctitle">Category Title</CFormLabel>
+                  <CFormLabel htmlFor="ctitle">Job Category Name</CFormLabel>
                   <CFormInput
                     type="text"
-                    id="ctitle"
-                    placeholder="Enter Category Title"
+                    id="j_category"
+                    placeholder="Enter category name"
                     onChange={(e)=>setCategory(e.target.value)}
                     required
                   />
+                 
                 </div> 
                 <div className="mb-3">
                     <CButton type='submit' color='primary'>submit</CButton>

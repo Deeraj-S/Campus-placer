@@ -22,6 +22,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CFormSelect,
 } from '@coreui/react';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,9 +31,9 @@ const Tables = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/hod/get")
+    axios.get("http://localhost:5001/api/hod/get")
       .then((res) => {
-        console.log(res)
+        console.log(res);
         setHod(res.data.hod);
       })
       .catch((err) => {
@@ -42,17 +43,17 @@ const Tables = () => {
 
   const Edit = ({ item }) => {
     const [visible, setVisible] = useState(false);
-    const [newHod, setnewHod] = useState(item);
+    const [newHod, setNewHod] = useState(item);
 
     const handleChange = (e) => {
-      setnewHod({ ...newHod, [e.target.name]: e.target.value });
+      setNewHod({ ...newHod, [e.target.name]: e.target.value });
     };
 
     const handleEdit = () => {
-      axios.put(`http://localhost:5000/api/hod/update/${newHod._id}`, newHod)
+      axios.put(`http://localhost:5001/api/hod/update/${newHod._id}`, newHod)
         .then((res) => {
           if (res.data.success) {
-            alert(" updated successfully");
+            alert("HOD updated successfully");
             setVisible(false);
             setHod((prevHod) => prevHod.map((hod) =>
               hod._id === newHod._id ? newHod : hod
@@ -65,6 +66,16 @@ const Tables = () => {
           alert(err.message);
         });
     };
+    const [branch, setBranch] = useState([])
+    useEffect(() => {
+      axios.get("http://localhost:5001/api/branch/get")
+        .then((res) => {
+          setBranch(res.data.branch);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }, []);
 
     return (
       <>
@@ -73,21 +84,69 @@ const Tables = () => {
         </CButton>
         <CModal scrollable visible={visible} onClose={() => setVisible(false)}>
           <CModalHeader>
-            <CModalTitle>Edit Hod</CModalTitle>
+            <CModalTitle>Edit HOD</CModalTitle>
           </CModalHeader>
           <CModalBody>
             <CForm>
               <div className="mb-3">
-                <CFormLabel htmlFor="h_name">Hod Name</CFormLabel>
+                <CFormLabel htmlFor="h_name">HOD Name</CFormLabel>
                 <CFormInput
                   value={newHod.h_name}
                   type="text"
-                  name='h_name'
+                  name="h_name"
                   id="h_name"
-                  placeholder="Edit  name"
+                  placeholder="Edit name"
                   onChange={handleChange}
                   required
                 />
+              </div>
+              <div className="mb-3">
+                <CFormLabel htmlFor="h_email">Email</CFormLabel>
+                <CFormInput
+                  value={newHod.h_email}
+                  type="email"
+                  name="h_email"
+                  id="h_email"
+                  placeholder="Edit email"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <CFormLabel htmlFor="h_phone">Phone</CFormLabel>
+                <CFormInput
+                  value={newHod.h_phone}
+                  type="text"
+                  name="h_phone"
+                  id="h_phone"
+                  placeholder="Edit phone"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <CFormLabel htmlFor="h_address">Address</CFormLabel>
+                <CFormInput
+                  value={newHod.h_address}
+                  type="text"
+                  name="h_address"
+                  id="h_address"
+                  placeholder="Edit address"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+              <CFormLabel htmlFor="branch_id">Branch</CFormLabel>
+                <CFormSelect name='branch_id' id="branch_id" onChange={handleChange} >
+                  <option value="">Select branch</option>
+                  {branch.map((item) => {
+                    return (
+                      <option value={item._id}>{item.branch_name}</option>
+                    )
+                  })}
+
+                </CFormSelect>
               </div>
             </CForm>
           </CModalBody>
@@ -104,7 +163,7 @@ const Tables = () => {
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this?")) {
-      axios.delete(`http://localhost:5000/api/hod/delete/${id}`)
+      axios.delete(`http://localhost:5001/api/hod/delete/${id}`)
         .then((res) => {
           if (res.data.success) {
             alert("Deleted successfully");
@@ -125,7 +184,7 @@ const Tables = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>HOD</strong>
-            <CButton color="info" onClick={() => navigate('/hod/insert')}>Add new </CButton>
+            <CButton color="info" onClick={() => navigate('/hod/insert')}>Add new</CButton>
           </CCardHeader>
           <CCardBody>
             <CTable>
@@ -150,10 +209,18 @@ const Tables = () => {
                     <CTableDataCell>{item.h_phone}</CTableDataCell>
                     <CTableDataCell>{item.h_address}</CTableDataCell>
                     <CTableDataCell>{item.branch_id.branch_name}</CTableDataCell>
-                    <CTableDataCell><img style={{height:"100px",width:"100px"}} alt='' src={`http://localhost:5000/api/upload/${item.h_photo}`}/></CTableDataCell>
+                    <CTableDataCell>
+                      <img
+                        style={{ height: "100px", width: "100px" }}
+                        alt=""
+                        src={`http://localhost:5001/api/upload/${item.h_photo}`}
+                      />
+                    </CTableDataCell>
                     <CTableDataCell>
                       <Edit item={item} />
-                      <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>
+                      <CButton color="danger" onClick={() => handleDelete(item._id)}>
+                        Delete
+                      </CButton>
                     </CTableDataCell>
                   </CTableRow>
                 ))}

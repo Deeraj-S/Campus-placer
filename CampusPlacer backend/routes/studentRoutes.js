@@ -1,10 +1,31 @@
 const express= require('express');
-const {studentRegister,login, Get,Update,Delete}= require('../controller/studentController');
+const {Register,Delete, Update, Get} = require('../controller/studentController');
 const routes = express.Router()
-routes.post("/insert",studentRegister)
-routes.post("/login",login)
-routes.get("/get",Get)
-routes.put("/update/:id",Update)
+const multer =require('multer')
+
+
+const storage =multer.diskStorage({
+    destination:function(req,file,cb){
+        if(file.fieldname=="s_photo"){
+            cb(null,'uploads/photos')
+        }
+        else{
+            cb(null,'uploads/resume')
+            
+        }
+    },
+    filename:function(req,file,cb){
+        cb(null,Date.now()+ '-' + file.originalname)
+    }
+})
+const upload = multer({storage:storage})
+
+routes.post("/insert",upload.fields([{name:'s_photo',maxCount:1},{name:'s_resume',maxCount:1}]),Register)
 routes.delete("/delete/:id",Delete)
+
+routes.put("/update/:id", Update)
+routes.get("/get/:id", Get)
+routes.get("/get", Get)
+// routes.post("/login",Login)
 
 module.exports=routes
