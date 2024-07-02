@@ -52,29 +52,35 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 //ch
 
-const Hod =React.lazy(()=>import('./views/Hod/Hod.js'))
-const HodInsert = React.lazy(()=>import('./views/Hod/insert.js'))
+const Hod = React.lazy(() => import('./views/Hod/Hod.js'))
+const HodInsert = React.lazy(() => import('./views/Hod/insert.js'))
 const Category = React.lazy(() => import('./views/category/Category.js'))
 const CategoryInsert = React.lazy(() => import('./views/category/Insert.js'))
-const Branch = React.lazy(()=> import('./views/branch/Branch.js'))
-const BranchInsert = React.lazy(()=>import('./views/branch/Insert.js'))
-const student = React.lazy(()=> import('./views/student/student.js'))
+const Branch = React.lazy(() => import('./views/branch/Branch.js'))
+const BranchInsert = React.lazy(() => import('./views/branch/Insert.js'))
+const student = React.lazy(() => import('./views/student/student.js'))
+const Placement = React.lazy(() => import('./views/placement/placement.js'))
+const PlacementInsert = React.lazy(() => import('./views/placement/insert.js'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   // ch
   { path: '/student', name: 'Student', element: student },
-  { path: '/hod', name: 'Hod', element: Hod },
-  { path: '/hod/insert', name: 'Insert', element: HodInsert },
 
   { path: '/branch', name: 'Branch', element: Branch },
   { path: '/branch/insert', name: 'Insert', element: BranchInsert },
+
+  { path: '/hod', name: 'Hod', element: Hod },
+  { path: '/hod/insert', name: 'Insert', element: HodInsert },
+
+  { path: '/placement', name: 'Placement', element: Placement },
+  { path: '/placement/insert', name: 'Insert', element: PlacementInsert },
 
   { path: '/category', name: 'CATEGORY', element: Category },
   { path: '/category/insert', name: 'Insert', element: CategoryInsert },
 
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  
+
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

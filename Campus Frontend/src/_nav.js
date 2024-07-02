@@ -15,18 +15,14 @@ import {
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
-// let role = JSON.parse(localStorage.getItem('role'))
+let role = JSON.parse(localStorage.getItem('role'))
 
-const _nav =  [
+const _nav = [
   {
     component: CNavItem,
-    name: 'Dashboard',
+    name: 'Admin Dashboard',
     to: '/dashboard',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
   },
   {
     component: CNavTitle,
@@ -34,15 +30,10 @@ const _nav =  [
   },
 
   //ch
+
   {
     component: CNavItem,
-    name: 'Hod',
-    to: '/Hod',
-    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Student',
+    name: 'Students',
     to: '/student',
     icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   },
@@ -53,9 +44,25 @@ const _nav =  [
     to: '/Branch',
     icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   },
+
   {
     component: CNavItem,
-    name: 'Category',
+    name: 'Hod',
+    to: '/Hod',
+    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+  },
+
+  {
+    component: CNavItem,
+    name: 'Placement Officer',
+    to: '/placement',
+    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+
+  },
+
+  {
+    component: CNavItem,
+    name: 'Job Category',
     to: '/Category',
     icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   },
@@ -335,7 +342,7 @@ const _nav =  [
     icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
   },
 ]
-  
+
 
 
 

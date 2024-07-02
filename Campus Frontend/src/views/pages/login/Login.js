@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Router, useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -17,7 +17,7 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
 
-const Login = () => {
+const Login = ({ setRole }) => {
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -32,6 +32,7 @@ const Login = () => {
     password: ''
   })
 
+
   const handleChange = (e) => {
     setLogin_details({ ...login_details, [e.target.name]: e.target.value })
   }
@@ -39,14 +40,15 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    axios.post("http://localhost:5000/api/admin/login", login_details)
+    axios.post("http://localhost:5000/api/all/login", login_details)
       .then((res) => {
         console.log(res)
         if (res.data.success) {
           let token = res.data.token
-          let role = res.data.role
+          let rolee = res.data.role
           localStorage.setItem("token", JSON.stringify(token))
-          localStorage.setItem("role", JSON.stringify(role))
+          localStorage.setItem("role", JSON.stringify(rolee))
+          setRole(rolee)
           navigate('/')
         }
         else {
@@ -59,8 +61,6 @@ const Login = () => {
       })
 
   }
-
-
 
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">

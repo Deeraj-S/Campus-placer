@@ -13,9 +13,12 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const Register = () => {
 
+  const navigate = useNavigate()
   const [register_details, setRegister_details] = useState({})
 
   const handleChange = (e) => {
@@ -43,6 +46,13 @@ const Register = () => {
     axios.post("http://localhost:5000/api/admin/insert", formData)
       .then((res) => {
         console.log(res.data.success, 2222)
+        if (res.data.success) {
+          alert("Admin added")
+          navigate('/login')
+
+        } else {
+          alert(res.data.message)
+        }
       })
       .catch((err) => {
         console.log(err)

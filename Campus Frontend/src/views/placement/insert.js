@@ -17,26 +17,24 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
 const FC = () => {
-  const [hod, setHod] = useState({})
+  const [placement_officer, setPlacement_officer] = useState({})
   let nav = useNavigate()
   const handleSubmit = (e) => {
     e.preventDefault()
     const formData = new FormData()
-    formData.append("h_name", hod.h_name)
+    formData.append("p_name", placement_officer.p_name)
+    formData.append("p_phone", placement_officer.p_phone)
+    formData.append("p_email", placement_officer.p_email)
+    formData.append("p_password", placement_officer.p_password)
+    formData.append("p_address", placement_officer.p_address)
+    formData.append("p_photo", placement_officer.p_photo)
 
-    formData.append("h_phone", hod.h_phone)
-    formData.append("h_email", hod.h_email)
-    formData.append("h_password", hod.h_password)
-    formData.append("h_address", hod.h_address)
-    formData.append("branch_id", hod.branch_id)
-    formData.append("h_photo", hod.h_photo)
-
-    axios.post("http://localhost:5000/api/hod/insert", formData)
+    axios.post("http://localhost:5000/api/placement/insert", formData)
       .then((res) => {
         console.log(res)
         if (res.data.success) {
-          alert("HOD added")
-          nav("/hod")
+          alert("Placement Officer added")
+          nav("/placement")
         } else {
           alert(res.data.message)
         }
@@ -45,23 +43,15 @@ const FC = () => {
         console.log(err, 22222)
       })
   }
-  const [branch, setBranch] = useState([])
-  useEffect(() => {
-    axios.get("http://localhost:5000/api/branch/get")
-      .then((res) => {
-        setBranch(res.data.branch);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+
+
   const handleChange = (e) => {
-    setHod({ ...hod, [e.target.name]: e.target.value })
+    setPlacement_officer({ ...placement_officer, [e.target.name]: e.target.value })
   }
   const handleChangeImage = (e) => {
-    setHod({ ...hod, [e.target.name]: e.target.files[0] })
+    setPlacement_officer({ ...placement_officer, [e.target.name]: e.target.files[0] })
   }
-  console.log(hod, 11111)
+  console.log(placement_officer, 11111)
 
   return (
     <CRow>
@@ -73,78 +63,66 @@ const FC = () => {
           <CCardBody>
             <CForm encType='multipart/form-data' onSubmit={handleSubmit}>
               <div className="mb-3">
-                <CFormLabel htmlFor="h_name">HOD Name</CFormLabel>
+                <CFormLabel htmlFor="p_name">Placement Officer Name</CFormLabel>
                 <CFormInput
                   type="text"
-                  id="h_name"
-                  name='h_name'
+                  id="p_name"
+                  name='p_name'
                   placeholder="Enter name"
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="h_phone">HOD Phone</CFormLabel>
+                <CFormLabel htmlFor="p_phone">Placement officer Phone</CFormLabel>
                 <CFormInput
                   type="text"
-                  id="h_phone"
-                  name='h_phone'
+                  id="p_phone"
+                  name='p_phone'
                   placeholder="Enter phone"
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="h_email">HOD Email</CFormLabel>
+                <CFormLabel htmlFor="p_email">Email</CFormLabel>
                 <CFormInput
                   type="email"
-                  id="h_email"
-                  name='h_email'
+                  id="p_email"
+                  name='p_email'
                   placeholder="Enter email"
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="h_password">HOD Password</CFormLabel>
+                <CFormLabel htmlFor="p_password">Password</CFormLabel>
                 <CFormInput
                   type="password"
-                  id="h_password"
-                  name='h_password'
+                  id="p_password"
+                  name='p_password'
                   placeholder="Enter password"
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="h_address">HOD Address</CFormLabel>
+                <CFormLabel htmlFor="p_address">Address</CFormLabel>
                 <CFormInput
                   type="text"
-                  id="h_address"
-                  name='h_address'
+                  id="p_address"
+                  name='p_address'
                   placeholder="Enter address"
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="branch_id">Branch</CFormLabel>
-                <CFormSelect name='branch_id' id="branch_id" onChange={handleChange} >
-                  <option value="">Select branch</option>
-                  {branch.map((item) => {
-                    return (
-                      <option value={item._id}>{item.branch_name}</option>
-                    )
-                  })}
-
-                </CFormSelect>
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="h_photo">HOD Photo</CFormLabel>
+                <CFormLabel htmlFor="p_photo">Placement Officer Photo</CFormLabel>
                 <CFormInput
                   type="file"
-                  id="h_photo"
-                  name="h_photo"
+                  id="p_photo"
+                  name="p_photo"
                   onChange={handleChangeImage}
                 />
               </div>

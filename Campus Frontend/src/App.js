@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -32,6 +32,10 @@ const App = () => {
     setColorMode(storedTheme)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  let rolee = JSON.parse(localStorage.getItem('role'))
+  const [role, setRole] = useState(rolee)
+
+
   return (
     <HashRouter>
       <Suspense
@@ -42,11 +46,11 @@ const App = () => {
         }
       >
         <Routes>
-          <Route exact path="/login" name="Login Page" element={<Login />} />
+          <Route exact path="/login" name="Login Page" element={<Login role={role} setRole={setRole} />} />
           <Route exact path="/register" name="Register Page" element={<Register />} />
           <Route exact path="/404" name="Page 404" element={<Page404 />} />
           <Route exact path="/500" name="Page 500" element={<Page500 />} />
-          <Route path="*" name="Home" element={<DefaultLayout />} />
+          <Route path="*" name="Home" element={<DefaultLayout role={role} />} />
         </Routes>
       </Suspense>
     </HashRouter>

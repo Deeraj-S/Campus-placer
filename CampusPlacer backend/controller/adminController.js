@@ -6,7 +6,7 @@ env.config()
 const AdminInsert = async (req, res) => {
     try {
 
-        const { name, phone, email, password } = req.body
+        const { name, email, phone, password } = req.body
         //console.log(req.file.filename)
         const check = await adminSchema.find({ email })
         if (check.length > 0) {
@@ -18,12 +18,12 @@ const AdminInsert = async (req, res) => {
             const secpass = await bcryptjs.hash(password, salt)
             console.log(secpass)
 
-            const admin = await adminSchema({ name, phone, email, password: secpass ,image:req.file.filename})
+            const admin = await adminSchema({ name, email, phone, password: secpass, image: req.file.filename })
 
             await admin.save()
             return res.json({ success: true, savedUser: admin })
         }
-    } 
+    }
     catch (err) {
         console.log("Error:" + err.message)
         res.send("Internal server error")
@@ -32,16 +32,16 @@ const AdminInsert = async (req, res) => {
 
 const Get = async (req, res) => {
     try {
-        if(req.params.id){
+        if (req.params.id) {
             const admin = await adminSchema.findById(req.params.id);
             return res.json({ success: true, admin })
         }
-        else{
+        else {
             const admin = await adminSchema.find()
-        return res.json({ success: true, admin })
+            return res.json({ success: true, admin })
 
         }
-        
+
 
     } catch (err) {
         console.log("Error:" + err.message)
@@ -114,31 +114,5 @@ const Update = async (req, res) => {
     }
 }
 
-const Login = async (req, res) => {
-    try {
-        const { name, phone, email, password } = req.body
-        const check = await adminSchema.findOne({ email })
-        if (check) {
-            const passCompare = await bcryptjs.compare(password, check.password);
-            if (!passCompare) {
-                return res.json({ success: false, message: "Incorrect password or email" })
-            }
-            else{
-                const data = check.id
-                const token = await jwt.sign(data,process.env.JWT_SECRET)
-                return res.json({success:true,message:"Login successful",token})
-            }
 
-        }
-        else {
-          return   res.json({ success: false, message: "Incorrect password or email" })
-
-        }
-
-    } catch (err) {
-        console.log("Error:" + err.message)
-        res.send("Internal server error")
-
-    }
-}
-module.exports = { AdminInsert, Delete, Update, Get, Login }
+module.exports = { AdminInsert, Delete, Update, Get }

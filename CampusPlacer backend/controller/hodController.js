@@ -9,7 +9,7 @@ env.config()
 const hodRegister = async (req, res) => {
     try {
 
-        const { h_name, h_phone, h_email, h_password,h_address,branch_id,h_photo } = req.body
+        const { h_name, h_phone, h_email, h_password, h_address, branch_id, h_photo } = req.body
         const check = await hodSchema.find({ h_email })
         if (check.length > 0) {
             return res.json({ success: false, message: "email or register number already exists" })
@@ -19,7 +19,7 @@ const hodRegister = async (req, res) => {
             //console.log(salt)
             const secpass = await bcryptjs.hash(h_password, salt)
             //console.log(secpass)
-            const hod = await hodSchema({ h_name, h_phone, h_email,h_address,branch_id,h_photo,h_password: secpass,h_photo:req.file.filename })
+            const hod = await hodSchema({ h_name, h_phone, h_email, h_address, branch_id, h_photo, h_password: secpass, h_photo: req.file.filename })
             await hod.save()
             return res.json({ success: true, savedUser: hod })
         }
@@ -96,19 +96,20 @@ const Update = async (req, res) => {
         if (!check) {
             res.json({ success: false, message: "not found" })
         } else {
-            const { h_name, h_phone, h_email, h_password,h_address,branch_id,h_photo } = req.body
+            const { h_name, h_phone, h_email, h_address, branch_id } = req.body
             const newData = {}
             //const salt = await bcryptjs.genSalt(10)
             //const secpass = await bcryptjs.hash(password, salt)
             if (h_name) { newData.h_name = h_name }
             if (h_phone) { newData.h_phone = h_phone }
             if (h_email) { newData.h_email = h_email }
-          
             if (h_address) { newData.h_address = h_address }
             if (branch_id) { newData.branch_id = branch_id }
-            if (h_photo) { newData.h_photo = h_photo }
-        
-            
+            if (req?.file?.filename) {
+                newData.h_photo = req?.file?.filename
+            }
+
+
             const UpdatedData = await hodSchema.findByIdAndUpdate(id, { $set: newData }, { new: true });
             return res.json({ success: true, UpdatedData })
         }
@@ -120,4 +121,4 @@ const Update = async (req, res) => {
     }
 }
 
-module.exports = { hodRegister,Get,Update,Delete }
+module.exports = { hodRegister, Get, Update, Delete }

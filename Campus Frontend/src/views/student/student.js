@@ -30,7 +30,7 @@ const Tables = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/student/get")
+    axios.get("http://localhost:5000/api/student/get")
       .then((res) => {
         setStudent(res.data.student);
       })
@@ -39,9 +39,9 @@ const Tables = () => {
       });
   }, []);
 
-  
 
-  
+
+
 
   return (
     <CRow>
@@ -49,7 +49,7 @@ const Tables = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>Students</strong>
-           
+
           </CCardHeader>
           <CCardBody>
             <CTable>
@@ -78,7 +78,7 @@ const Tables = () => {
                     <CTableDataCell>{item.register_no}</CTableDataCell>
                     <CTableDataCell>{item.branch_id.branch_name}</CTableDataCell>
                     <CTableDataCell>{item.hod_id.h_name}</CTableDataCell>
-                    <CTableDataCell><img style={{height:"100px",width:"100px"}} alt='' src={`http://localhost:5001/api/upload/photo/${item.s_photo}`}/></CTableDataCell>
+                    <CTableDataCell><img style={{ height: "100px", width: "100px" }} alt='' src={`http://localhost:5000/api/upload/photo/${item.s_photo}`} /></CTableDataCell>
                     <CTableDataCell>{item.s_resume}</CTableDataCell>
                   </CTableRow>
                 ))}

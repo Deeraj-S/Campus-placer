@@ -57,14 +57,13 @@ import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
 
-  // const navigate = useNavigate()
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (!token) {
-  //     navigate('/login')
-  //   }
-  // }, [navigate])
+  const navigate = useNavigate()
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login')
+    }
+  }, [navigate])
 
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
