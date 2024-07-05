@@ -6,7 +6,7 @@ env.config()
 const AdminInsert = async (req, res) => {
     try {
 
-        const { name, email, phone, password } = req.body
+        const { name, email, phone, password,image } = req.body
         //console.log(req.file.filename)
         const check = await adminSchema.find({ email })
         if (check.length > 0) {
@@ -32,22 +32,20 @@ const AdminInsert = async (req, res) => {
 
 const Get = async (req, res) => {
     try {
-        if (req.params.id) {
-            const admin = await adminSchema.findById(req.params.id);
-            return res.json({ success: true, admin })
-        }
-        else {
-            const admin = await adminSchema.find()
-            return res.json({ success: true, admin })
+        const id = req.params.id;  // Get the ID from the request parameters
+        const admin = await adminSchema.findById(id);  // Find the admin by ID
 
+        if (!admin) {
+            return res.status(404).json({ success: false, message: 'Admin not found' });
         }
 
-
+        res.json({ success: true, admin });
     } catch (err) {
-        console.log("Error:" + err.message)
-        res.send("Internal server error")
+        console.log("Error:" + err.message);
+        res.status(500).send("Internal server error");
     }
-}
+};
+
 
 // const Get = async (req, res) => {
 //     try {
@@ -102,6 +100,9 @@ const Update = async (req, res) => {
                 const salt = await bcryptjs.genSalt(10)
                 const secpass = await bcryptjs.hash(password, salt)
                 newData.password = secpass
+            }
+            if (req?.file?.filename) {
+                newData.h_photo = req?.file?.filename
             }
             const UpdatedData = await adminSchema.findByIdAndUpdate(id, { $set: newData }, { new: true });
             return res.json({ success: true, UpdatedData })

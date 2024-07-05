@@ -2,6 +2,7 @@ const ConnectMongo = require('./db');
 const env = require('dotenv');
 const cors = require('cors');
 const path = require('path')
+const countsRouter = require('./routes/counts')
 env.config()
 
 ConnectMongo()
@@ -27,6 +28,7 @@ app.use("/api/branch", require('./routes/branchRoutes'))
 app.use("/api/student", require('./routes/studentRoutes'))
 app.use("/api/placement", require('./routes/placementRoutes'))
 app.use("/api/all", require('./routes/loginRoutes'))
+app.use('/api', countsRouter)
 
 //app.use(cors({origin:"http://localhost:3000",methods:["GET","POST"]}))
 

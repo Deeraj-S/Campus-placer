@@ -25,7 +25,7 @@ import {
 } from '@coreui/react';
 import { useNavigate } from 'react-router-dom';
 
-const Tables = () => {
+const Tables = (role) => {
   const [student, setStudent] = useState([]);
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ const Tables = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>Students</strong>
-
+            {role=="hod" && <CButton >Add Student </CButton>}
           </CCardHeader>
           <CCardBody>
             <CTable>

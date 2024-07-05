@@ -28,7 +28,7 @@ const Login = async (req, res) => {
                 const data = checkadmin.id
                 console.log(data)
                 const token = await jwt.sign(data, process.env.JWT_SECRET) // we have to pass two things id ad secreat key
-                return res.json({ success: true, message: "Login successfull", token, name: checkadmin.name, role: "admin" })
+                return res.json({ success: true, message: "Login successfull", token, name: checkadmin.name, role: "admin" ,id:checkadmin.id})
             }
 
         }

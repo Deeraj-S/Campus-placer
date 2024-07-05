@@ -191,7 +191,7 @@ const Tables = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>Placement Officer</strong>
-            <CButton color="info" onClick={() => navigate('/placement/insert')}>Add new </CButton>
+            <CButton color="info" onClick={() => navigate('/placement/insert')}>Add new PO</CButton>
           </CCardHeader>
           <CCardBody>
             <CTable>

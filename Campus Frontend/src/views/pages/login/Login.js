@@ -46,8 +46,10 @@ const Login = ({ setRole }) => {
         if (res.data.success) {
           let token = res.data.token
           let rolee = res.data.role
+          let id = res.data.id
           localStorage.setItem("token", JSON.stringify(token))
           localStorage.setItem("role", JSON.stringify(rolee))
+          localStorage.setItem("id",JSON.stringify(id))
           setRole(rolee)
           navigate('/')
         }
