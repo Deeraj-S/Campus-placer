@@ -61,6 +61,9 @@ const BranchInsert = React.lazy(() => import('./views/branch/Insert.js'))
 const student = React.lazy(() => import('./views/student/student.js'))
 const Placement = React.lazy(() => import('./views/placement/placement.js'))
 const PlacementInsert = React.lazy(() => import('./views/placement/insert.js'))
+const Jobs = React.lazy(() => import('./views/jobs/Jobs.js'))
+const JobsInsert = React.lazy(() => import('./views/jobs/insert.js'))
+const JobsDiscription = React.lazy(() => import('./views/jobs/discription.js'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -75,6 +78,10 @@ const routes = [
 
   { path: '/placement', name: 'Placement', element: Placement },
   { path: '/placement/insert', name: 'Insert', element: PlacementInsert },
+
+  { path: '/jobs', name: 'Jobs', element: Jobs },
+  { path: '/jobs/insert', name: 'Insert', element: JobsInsert },
+  { path: '/jobs/discription/:id', name: 'Discription', element: JobsDiscription },
 
   { path: '/category', name: 'CATEGORY', element: Category },
   { path: '/category/insert', name: 'Insert', element: CategoryInsert },

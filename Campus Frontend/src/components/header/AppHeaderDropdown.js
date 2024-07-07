@@ -89,6 +89,7 @@ const AppHeaderDropdown = () => {
             password: foundAdmin.password,
             image: foundAdmin.image,
           });
+
         } else {
           console.error('Admin details not found');
         }
@@ -120,7 +121,7 @@ const AppHeaderDropdown = () => {
   };
 
   const handleImageChange = (e) => {
-    setNewImage({ ...formData, [e.target.name]:e.target.files[0]});
+    setNewImage({ ...formData, [e.target.name]: e.target.files[0] });
   };
 
   const handleSaveChanges = () => {
@@ -151,6 +152,7 @@ const AppHeaderDropdown = () => {
         setIsEditing(false);
       } catch (error) {
         console.error(error);
+        setChange(false)
       }
     };
 

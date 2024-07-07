@@ -27,6 +27,7 @@ app.use("/api/hod", require('./routes/hodRoutes'))
 app.use("/api/branch", require('./routes/branchRoutes'))
 app.use("/api/student", require('./routes/studentRoutes'))
 app.use("/api/placement", require('./routes/placementRoutes'))
+app.use("/api/job", require('./routes/joblistRoutes'))
 app.use("/api/all", require('./routes/loginRoutes'))
 app.use('/api', countsRouter)
 

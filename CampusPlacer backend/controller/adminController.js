@@ -6,7 +6,7 @@ env.config()
 const AdminInsert = async (req, res) => {
     try {
 
-        const { name, email, phone, password,image } = req.body
+        const { name, email, phone, password } = req.body
         //console.log(req.file.filename)
         const check = await adminSchema.find({ email })
         if (check.length > 0) {
