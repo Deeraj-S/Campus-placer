@@ -256,6 +256,7 @@ const JobsDescription = ({ role }) => {
 
     const { id } = useParams();
     const [jobs, setJobs] = useState(null);
+    const navigate = useNavigate()
 
     useEffect(() => {
         axios.get(`http://localhost:5000/api/job/get/${id}`)
@@ -317,7 +318,7 @@ const JobsDescription = ({ role }) => {
                         <div>
                             {role == "placement_officer" && <EditJobModal item={jobs} setJobs={setJobs} />}
                             {role == "placement_officer" && <DeleteJobModal item={jobs} setJobs={setJobs} />}
-                            {role == "" && <CButton className="custom-blue-button">Apply Now</CButton>}
+                            {role == "student" && <CButton className="custom-blue-button" onClick={() => navigate('/jobs/apply')}>Apply Now</CButton>}
                         </div>
                     </CCardBody>
                 </CCard>
