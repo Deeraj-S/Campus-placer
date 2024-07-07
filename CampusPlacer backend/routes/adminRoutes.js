@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
-routes.post("/insert", upload.single('image'), AdminInsert)
+routes.post("/insert", upload.single('profile'), AdminInsert)
 routes.delete("/delete/:id", Delete)
 
 routes.put("/update/:id", upload.single('image'),Update)
