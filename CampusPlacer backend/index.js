@@ -30,6 +30,7 @@ app.use("/api/placement", require('./routes/placementRoutes'))
 app.use("/api/job", require('./routes/joblistRoutes'))
 app.use("/api/all", require('./routes/loginRoutes'))
 app.use('/api', countsRouter)
+app.use('/api/application',require('./routes/jobApplicationRoutes'))
 
 //app.use(cors({origin:"http://localhost:3000",methods:["GET","POST"]}))
 

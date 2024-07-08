@@ -83,7 +83,7 @@ const routes = [
   { path: '/jobs', name: 'Jobs', element: Jobs },
   { path: '/jobs/insert', name: 'Insert', element: JobsInsert },
   { path: '/jobs/discription/:id', name: 'Discription', element: JobsDiscription },
-  { path: '/jobs/apply', name: 'Apply', element: JobApply },
+  { path: '/jobs/apply/:id', name: 'Apply', element: JobApply },
 
   { path: '/category', name: 'CATEGORY', element: Category },
   { path: '/category/insert', name: 'Insert', element: CategoryInsert },

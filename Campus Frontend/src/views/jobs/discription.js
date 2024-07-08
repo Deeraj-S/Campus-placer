@@ -319,7 +319,7 @@ const JobsDescription = ({ role }) => {
                         <div>
                             {role == "placement_officer" && <EditJobModal item={jobs} setJobs={setJobs} />}
                             {role == "placement_officer" && <DeleteJobModal item={jobs} setJobs={setJobs} />}
-                            {role == "student" && <CButton className="custom-blue-button" onClick={() => navigate('/jobs/apply')}>Apply Now</CButton>}
+                            {role == "student" && <CButton className="custom-blue-button" onClick={() => navigate(`/jobs/apply/${jobs._id}`)}>Apply Now</CButton>}
                         </div>
                     </CCardBody>
                 </CCard>

@@ -1,205 +1,286 @@
-import React, { useEffect, useState } from 'react'
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import {
+    CForm,
+    CFormInput,
+    CFormLabel,
     CButton,
     CCard,
     CCardBody,
     CCardHeader,
-    CCol,
-    CForm,
-    CFormInput,
-    CFormLabel,
     CFormSelect,
-    CFormTextarea,
-    CRow,
-} from '@coreui/react'
-import axios from 'axios'
-//import { DocsExample } from 'src/components'
-import { useNavigate } from 'react-router-dom';
+} from '@coreui/react';
 
-const FC = () => {
-    const [jobs, setJobs] = useState({})
-    let nav = useNavigate()
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const formData = new FormData()
-        formData.append("company_name", jobs.company_name)
-        formData.append("job_title", jobs.job_title)
-        formData.append("job_role", jobs.job_role)
-        formData.append("category_id", jobs.category_id)
-        formData.append("job_discription", jobs.job_discription)
-        formData.append("salary", jobs.salary)
-        formData.append("shifts", jobs.shifts)
-        formData.append("experience", jobs.experience)
-        formData.append("last_date", jobs.last_date)
-        formData.append("cover_photo", jobs.cover_photo)
+const ApplyJob = () => {
+    const { id } = useParams(); // Get job ID from URL
+    const [job, setJob] = useState({});
+    const [formData, setFormData] = useState({
+        company_name: '',
+        job_title: '',
+        resume: null,
+        YOG: '',
+        CGPA: '',
+        experience: '',
+        s_name: '',
+        s_email: '',
+        s_phone: '',
+        register_no: '',
+        s_address: '',
+        course_id: ''
+    });
+    const [branch, setBranch] = useState([]);
+    const [error, setError] = useState(null); // State to hold error messages
 
-        axios.post("http://localhost:5000/api/job/insert", formData)
+    useEffect(() => {
+        // Fetch job details using job ID
+        axios.get(`http://localhost:5000/api/job/get/${id}`)
             .then((res) => {
-                console.log(res)
+                setJob(res.data.jobList);
+                setFormData((prevData) => ({
+                    ...prevData,
+                    company_name: res.data.jobList.company_name,
+                    job_title: res.data.jobList.job_title
+                }));
+            })
+            .catch((err) => {
+                console.error('Error fetching job details:', err);
+                setError('Failed to fetch job details. Please try again later.');
+            });
+
+        // Fetch student details using student ID from local storage
+        const student_id = localStorage.getItem('id');
+        if (!student_id) {
+            console.error('No user ID found in localStorage');
+            setError('No user ID found. Please log in again.');
+            return;
+        }
+
+        axios.get(`http://localhost:5000/api/student/GetById/${student_id.replace(/['"]+/g, '')}`)
+       
+            .then((res) => {
+                const student = res.data.student;
+                setFormData((prevData) => ({
+                    ...prevData,
+                    s_name: student.s_name,
+                    s_email: student.s_email,
+                    s_phone: student.s_phone,
+                    register_no: student.register_no,
+                    s_address: student.s_address
+                }));
+            })
+            .catch((err) => {
+                console.error('Error fetching student details:', err);
+                setError('Failed to fetch student details. Please try again later.');
+            });
+    }, [id]);
+
+    useEffect(() => {
+        // Fetch branch data
+        axios.get("http://localhost:5000/api/branch/get")
+            .then((res) => {
+                setBranch(res.data.branch);
+            })
+            .catch((err) => {
+                console.error('Error fetching branch data:', err);
+                setError('Failed to fetch branch data. Please try again later.');
+            });
+    }, []);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleFileChange = (e) => {
+        setFormData({ ...formData, resume: e.target.files[0] });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const student_id = localStorage.getItem('id').replace(/['"]+/g, ''); // Remove any extra quotes
+        const data = new FormData();
+        data.append('student_id',student_id);
+        data.append('job_id', id);
+        data.append('resume', formData.resume);
+        data.append('YOG', formData.YOG);
+        data.append('CGPA', formData.CGPA);
+        data.append('experience', formData.experience);
+        data.append('course_id', formData.course_id);
+
+        // console.log('Submit Data:', {
+        //     student_id: localStorage.getItem('id'),
+        //     job_id: id,
+        //     resume: formData.resume,
+        //     YOG: formData.YOG,
+        //     CGPA: formData.CGPA,
+        //     experience: formData.experience,
+        //     course_id: formData.course_id
+        // });
+
+        axios.post('http://localhost:5000/api/application/insert', data)
+            .then((res) => {
                 if (res.data.success) {
-                    alert("job added")
-                    nav("/jobs")
+                    alert('Application submitted successfully');
                 } else {
-                    alert(res.data.message)
+                    alert(res.data.message);
                 }
             })
             .catch((err) => {
-                console.log(err, 22222)
-            })
-    }
-    const [category, setCategory] = useState([])
-    useEffect(() => {
-        axios.get("http://localhost:5000/api/category/get")
-            .then((res) => {
-                console.log(res)
-                setCategory(res.data.category);
-            })
-            .catch((err) => {
-                console.error(err);
+                console.error('Error submitting application:', err);
+                alert('Failed to submit application. Please try again later.');
             });
-    }, []);
-    const handleChange = (e) => {
-        setJobs({ ...jobs, [e.target.name]: e.target.value })
-    }
-    const handleChangeImage = (e) => {
-        setJobs({ ...jobs, [e.target.name]: e.target.files[0] })
-    }
-    console.log(jobs, 11111)
+    };
+
+
+
 
     return (
-        <CRow>
-            <CCol xs={12}>
-                <CCard className="mb-4">
-                    <CCardHeader>
-                        <strong>Insert Form</strong>
-                    </CCardHeader>
-                    <CCardBody>
-                        <CForm encType='multipart/form-data' onSubmit={handleSubmit}>
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="company_name">Company Name</CFormLabel>
-                                <CFormInput
-                                    type="text"
-                                    id="company_name"
-                                    name='company_name'
-                                    placeholder="Enter company name"
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="job_title">Job Title</CFormLabel>
-                                <CFormInput
-                                    type="text"
-                                    id="job_title"
-                                    name='job_title'
-                                    placeholder="Enter job title"
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="job_role">Job Role</CFormLabel>
-                                <CFormInput
-                                    type="text"
-                                    id="job_role"
-                                    name='job_role'
-                                    placeholder="Enter job role"
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="category_id">Job Category</CFormLabel>
-                                <CFormSelect name='category_id' id="category_id" onChange={handleChange} >
-                                    <option value="">Select category</option>
-                                    {category.map((item) => {
-                                        return (
-                                            <option value={item._id}>{item.j_category}</option>
-                                        )
-                                    })}
-
-                                </CFormSelect>
-                            </div>
-
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="job_discription">Job Discription</CFormLabel>
-                                <CFormInput
-                                    type="text"
-                                    id="job_discription"
-                                    name='job_discription'
-                                    placeholder="Enter job discription"
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="salary">Salary</CFormLabel>
-                                <CFormInput
-                                    type="text"
-                                    id="salary"
-                                    name='salary'
-                                    placeholder="Enter salary"
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="shifts">Working Time</CFormLabel>
-                                <CFormInput
-                                    type="text"
-                                    id="shifts"
-                                    name='shifts'
-                                    placeholder="Enter working time (Shifts)"
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="experience">Experience</CFormLabel>
-                                <CFormInput
-                                    type="number"
-                                    id="experience"
-                                    name='experience'
-                                    placeholder="Enter experience"
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="last_date">Last Date</CFormLabel>
-                                <CFormInput
-                                    type="text"
-                                    id="last_date"
-                                    name='last_date'
-                                    placeholder="Enter last date to apply"
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-
-                            <div className="mb-3">
-                                <CFormLabel htmlFor="cover_photo">Cover Photo</CFormLabel>
-                                <CFormInput
-                                    type="file"
-                                    id="cover_photo"
-                                    name="cover_photo"
-                                    onChange={handleChangeImage}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <CButton type="submit" color="primary">Submit</CButton>
-                            </div>
-                        </CForm>
-                    </CCardBody>
-                </CCard>
-            </CCol>
-        </CRow>
-    )
+        <CCard className="p-4">
+            <CCardHeader>
+                <h5>Apply for Job</h5>
+            </CCardHeader>
+            <CCardBody>
+                <CForm onSubmit={handleSubmit} encType='multipart/form-data'>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="company_name">Company Name</CFormLabel>
+                        <CFormInput
+                            value={formData.company_name}
+                            type="text"
+                            name="company_name"
+                            id="company_name"
+                            placeholder="Company Name"
+                            readOnly
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="job_title">Job Title</CFormLabel>
+                        <CFormInput
+                            value={formData.job_title}
+                            type="text"
+                            name="job_title"
+                            id="job_title"
+                            placeholder="Job Title"
+                            readOnly
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="resume">Resume</CFormLabel>
+                        <CFormInput
+                            type="file"
+                            name='resume'
+                            id="resume"
+                            placeholder="Upload Resume"
+                            onChange={handleFileChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="YOG">Year of Graduation</CFormLabel>
+                        <CFormInput
+                           // value={formData.YOG}
+                            type="text"
+                            name="YOG"
+                            id="YOG"
+                            placeholder="Year of Graduation"
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="CGPA">CGPA</CFormLabel>
+                        <CFormInput
+                           // value={formData.CGPA}
+                            type="text"
+                            name="CGPA"
+                            id="CGPA"
+                            placeholder="CGPA"
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="experience">Experience</CFormLabel>
+                        <CFormInput
+                            //value={formData.experience}
+                            type="text"
+                            name="experience"
+                            id="experience"
+                            placeholder="Experience"
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="course_id">Branch</CFormLabel>
+                        <CFormSelect name='course_id' id="course_id" onChange={handleChange}>
+                            <option value="">Select branch</option>
+                            {branch.map((item) => (
+                                <option key={item._id} value={item._id}>{item.branch_name}</option>
+                            ))}
+                        </CFormSelect>
+                    </div>
+                    {/* Read-only student details */}
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="s_name">Student Name</CFormLabel>
+                        <CFormInput
+                            value={formData.s_name}
+                            type="text"
+                            name="s_name"
+                            id="s_name"
+                            placeholder="Student Name"
+                            
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="s_email">Student Email</CFormLabel>
+                        <CFormInput
+                            value={formData.s_email}
+                            type="text"
+                            name="s_email"
+                            id="s_email"
+                            placeholder="Student Email"
+                            
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="s_phone">Student Phone</CFormLabel>
+                        <CFormInput
+                            value={formData.s_phone}
+                            type="text"
+                            name="s_phone"
+                            id="s_phone"
+                            placeholder="Student Phone"
+                            
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="register_no">Register Number</CFormLabel>
+                        <CFormInput
+                            value={formData.register_no}
+                            type="text"
+                            name="register_no"
+                            id="register_no"
+                            placeholder="Register Number"
+                            
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="s_address">Address</CFormLabel>
+                        <CFormInput
+                            value={formData.s_address}
+                            type="text"
+                            name="s_address"
+                            id="s_address"
+                            placeholder="Address"
+                            
+                        />
+                    </div>
+                    <CButton type="submit" color="primary">Apply</CButton>
+                </CForm>
+            </CCardBody>
+        </CCard>
+    );
 }
 
-export default FC
+export default ApplyJob;
