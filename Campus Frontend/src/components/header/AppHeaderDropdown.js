@@ -15,42 +15,23 @@ import {
   CModalHeader,
   CModalTitle,
   CRow,
-  CTable,
-  CTableBody,
-  CTableCaption,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
   CAvatar,
-  CBadge,
   CDropdown,
   CDropdownDivider,
-  CDropdownHeader,
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react';
-import {
-  cilBell,
-  cilCreditCard,
-  cilCommentSquare,
-  cilEnvelopeOpen,
-  cilFile,
-  cilLockLocked,
-  cilSettings,
-  cilTask,
-  cilUser,
-  cilPencil,
-} from '@coreui/icons';
+import { cilUser, cilLockLocked, cilPencil } from '@coreui/icons';
+import { CImage } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AppHeaderDropdown = () => {
   const [admin, setAdmin] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [photoModalVisible, setPhotoModalVisible] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -59,8 +40,8 @@ const AppHeaderDropdown = () => {
     image: '',
   });
   const [isEditing, setIsEditing] = useState(false);
-  const [newImage, setNewImage] = useState(null); // New state for the new image file
-  const [change, setChange] = useState(false)
+  const [newImage, setNewImage] = useState(null);
+  const [change, setChange] = useState(false);
 
   const navigate = useNavigate();
 
@@ -89,7 +70,6 @@ const AppHeaderDropdown = () => {
             password: foundAdmin.password,
             image: foundAdmin.image,
           });
-
         } else {
           console.error('Admin details not found');
         }
@@ -108,7 +88,7 @@ const AppHeaderDropdown = () => {
   };
 
   const handleEditClick = () => {
-    setChange(true)
+    setChange(true);
     setIsEditing(true);
   };
 
@@ -121,45 +101,43 @@ const AppHeaderDropdown = () => {
   };
 
   const handleImageChange = (e) => {
-    setNewImage({ ...formData, [e.target.name]: e.target.files[0] });
+    setNewImage(e.target.files[0]);
   };
 
   const handleSaveChanges = () => {
     const updateAdmin = async () => {
       try {
+        const newFormData = new FormData();
+        newFormData.append('name', formData.name);
+        newFormData.append('email', formData.email);
+        newFormData.append('phone', formData.phone);
+        newFormData.append('password', formData.password);
+
         if (newImage) {
-          setChange(true)
-          const formData = new FormData();
-          formData.append('image', newImage);
-
-          // const uploadResponse = await axios.post('http://localhost:5000/api/upload', formData, {
-          //   headers: {
-          //     'Content-Type': 'multipart/form-data',
-          //   },
-          // });
-
-          // setFormData({
-          //   ...formData,
-          //   image: uploadResponse.data.filename,
-          // });
+          newFormData.append('image', newImage);
         }
 
-        const response = await axios.put(`http://localhost:5000/api/admin/update/${admin._id}`, formData);
+        const response = await axios.put(`http://localhost:5000/api/admin/update/${admin._id}`, newFormData);
         console.log(response);
         setAdmin(response.data.admin);
         setModalVisible(false);
-        setChange(false)
+        setChange(false);
         setIsEditing(false);
+        alert('Profile updated successfully!');
       } catch (error) {
         console.error(error);
-        setChange(false)
+        setChange(false);
       }
     };
 
     updateAdmin();
   };
 
-  if (!admin) return null; // or a loading indicator
+  const handlePhotoClick = () => {
+    setPhotoModalVisible(true);
+  };
+
+  if (!admin) return null;
 
   return (
     <CDropdown variant="nav-item">
@@ -185,7 +163,26 @@ const AppHeaderDropdown = () => {
           <CModalBody>
             <CForm>
               <div className="mb-3">
-                <CFormLabel htmlFor="name">Admin Name</CFormLabel>
+                <CFormLabel htmlFor="image" style={{ marginRight: '16px' }}>Profile Photo</CFormLabel>
+                {!isEditing ? (
+                  <img
+                    style={{ height: "50px", width: "50px", cursor: 'pointer' }}
+                    alt="Profile"
+                    src={`http://localhost:5000/api/upload/${formData.image}`}
+                    onClick={handlePhotoClick}
+                  />
+                ) : (
+                  <CFormInput
+                    type="file"
+                    id="image"
+                    name="image"
+                    onChange={handleImageChange}
+                    disabled={!isEditing}
+                  />
+                )}
+              </div>
+              <div className="mb-3">
+                <CFormLabel htmlFor="name">Name</CFormLabel>
                 <CFormInput
                   type="text"
                   id="name"
@@ -217,7 +214,7 @@ const AppHeaderDropdown = () => {
                   readOnly={!isEditing}
                 />
               </div>
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <CFormLabel htmlFor="password">Password</CFormLabel>
                 <CFormInput
                   type="password"
@@ -227,17 +224,7 @@ const AppHeaderDropdown = () => {
                   onChange={handleInputChange}
                   readOnly={!isEditing}
                 />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="image">Profile Image</CFormLabel>
-                <CFormInput
-                  type="file"
-                  id="image"
-                  name="image"
-                  onChange={handleImageChange}
-                  disabled={!isEditing}
-                />
-              </div>
+              </div> */}
             </CForm>
           </CModalBody>
           <CModalFooter>
@@ -249,6 +236,19 @@ const AppHeaderDropdown = () => {
                 Save changes
               </CButton>
             )}
+          </CModalFooter>
+        </CModal>
+        <CModal visible={photoModalVisible} onClose={() => setPhotoModalVisible(false)} size="lg">
+          <CModalHeader>
+            <CModalTitle>Profile Photo</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            <CImage fluid src={`http://localhost:5000/api/upload/${formData.image}`} alt="Profile" />
+          </CModalBody>
+          <CModalFooter>
+            <CButton color="secondary" onClick={() => setPhotoModalVisible(false)}>
+              Close
+            </CButton>
           </CModalFooter>
         </CModal>
         <CDropdownDivider />

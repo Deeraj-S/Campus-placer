@@ -37,6 +37,18 @@ const Get = async (req, res) => {
         res.send("Internal server error")
     }
 }
+const GetById = async (req, res) => {
+    try {
+        const id = req.params.id
+        const placement_officer = await placementSchema.findById(id)
+        res.json({ success: true, placement_officer })
+
+    } catch (err) {
+        console.log("Error:" + err.message)
+        res.send("Internal server error")
+    }
+}
+
 
 
 const Delete = async (req, res) => {
@@ -92,4 +104,4 @@ const Update = async (req, res) => {
 
 
 
-module.exports = { placementRegister, Get, Delete, Update }
+module.exports = { placementRegister, Get, Delete, Update ,GetById}

@@ -29,20 +29,21 @@ const JobInsert = async (req, res) => {
 const Get = async (req, res) => {
     try {
         if (req.params.id) {
-            const jobList = await joblistSchema.findById(req.params.id);
-            return res.json({ success: true, jobList })
+            const jobList = await joblistSchema.findById(req.params.id).populate("category_id", 'j_category');
+            if (!jobList) {
+                return res.status(404).json({ success: false, message: 'Job not found' });
+            }
+            return res.json({ success: true, jobList });
+        } else {
+            const jobList = await joblistSchema.find().populate("category_id", 'j_category');
+            res.json({ success: true, jobList });
         }
-        else {
-            const jobList = await joblistSchema.find().populate("category_id")
-            res.json({ success: true, jobList })
-        }
-
-
     } catch (err) {
-        console.log("Error:" + err.message)
-        res.send("Internal server error")
+        console.log("Error: " + err.message);
+        res.status(500).send("Internal server error");
     }
-}
+};
+
 
 
 const Delete = async (req, res) => {

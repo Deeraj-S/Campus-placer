@@ -9,7 +9,7 @@ env.config()
 const hodRegister = async (req, res) => {
     try {
 
-        const { h_name, h_phone, h_email, h_password, h_address, branch_id, h_photo } = req.body
+        const { h_name, h_phone, h_email, h_password, h_address, branch_id } = req.body
         const check = await hodSchema.find({ h_email })
         if (check.length > 0) {
             return res.json({ success: false, message: "email or register number already exists" })
@@ -19,7 +19,7 @@ const hodRegister = async (req, res) => {
             //console.log(salt)
             const secpass = await bcryptjs.hash(h_password, salt)
             //console.log(secpass)
-            const hod = await hodSchema({ h_name, h_phone, h_email, h_address, branch_id, h_photo, h_password: secpass, h_photo: req.file.filename })
+            const hod = await hodSchema({ h_name, h_phone, h_email, h_address, branch_id, h_password: secpass, h_photo: req.file.filename })
             await hod.save()
             return res.json({ success: true, savedUser: hod })
         }
@@ -61,6 +61,17 @@ const Get = async (req, res) => {
     try {
         //const student = await studentSchema.find({ name: "abhishek" });
         const hod = await hodSchema.find().populate("branch_id")
+        res.json({ success: true, hod })
+
+    } catch (err) {
+        console.log("Error:" + err.message)
+        res.send("Internal server error")
+    }
+}
+const GetById = async (req, res) => {
+    try {
+        const id = req.params.id
+        const hod = await hodSchema.findById(id).populate("branch_id")
         res.json({ success: true, hod })
 
     } catch (err) {
@@ -121,4 +132,4 @@ const Update = async (req, res) => {
     }
 }
 
-module.exports = { hodRegister, Get, Update, Delete }
+module.exports = { hodRegister, Get, Update, Delete,GetById }

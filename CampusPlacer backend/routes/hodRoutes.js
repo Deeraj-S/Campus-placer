@@ -1,5 +1,5 @@
 const express = require('express')
-const { hodRegister, Get, Update, Delete } = require('../controller/hodController')
+const { hodRegister, Get, Update, Delete ,GetById} = require('../controller/hodController')
 const multer = require('multer')
 
 
@@ -19,5 +19,6 @@ routes.post("/insert", upload.single('h_photo'), hodRegister)
 routes.get("/get", Get)
 routes.put("/update/:id", upload.single('h_photo'), Update)
 routes.delete("/delete/:id", Delete)
+routes.get("/GetById/:id",GetById)
 
 module.exports = routes

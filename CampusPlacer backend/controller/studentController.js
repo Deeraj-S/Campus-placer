@@ -5,12 +5,15 @@ const env = require('dotenv')
 env.config()
 
 
+
 const Register = async (req, res) => {
     try {
 
         const { s_name,s_phone,s_address,s_email,s_password,register_no,branch_id,hod_id } = req.body
         let photo = req.files['s_photo'][0].filename
         let resume = req.files['s_resume'][0].filename
+        //console.log(photo)
+        //console.log(resume)
         
         const check = await studentSchema.find({ s_email,register_no })
         if (check.length > 0) {
@@ -21,7 +24,7 @@ const Register = async (req, res) => {
             //console.log(salt)
             const secpass = await bcryptjs.hash(s_password, salt)
             //console.log(secpass)
-            const student = await studentSchema({ s_name,s_phone,s_address,s_email,register_no,branch_id,hod_id, s_password: secpass,s_photo:photo ,s_resume:resume})
+            const student = await studentSchema({ s_name,s_phone,s_address,s_email,register_no,branch_id,hod_id, s_password: secpass,s_photo:photo,s_resume:resume})
             await student.save()
             return res.json({ success: true, savedUser: student })
         }
@@ -61,7 +64,19 @@ const Register = async (req, res) => {
 
 const Get = async (req, res) => {
     try {
+        //const id =req.params.id
         const student = await studentSchema.find().populate(["branch_id","hod_id"])
+        res.json({ success: true, student })
+
+    } catch (err) {
+        console.log("Error:" + err.message)
+        res.send("Internal server error")
+    }
+}
+const GetById = async (req, res) => {
+    try {
+        const id =req.params.id
+        const student = await studentSchema.findById(id).populate(["branch_id","hod_id"])
         res.json({ success: true, student })
 
     } catch (err) {
@@ -97,7 +112,7 @@ const Update = async (req, res) => {
         if (!check) {
             res.json({ success: false, message: "not found" })
         } else {
-            const {  s_name,s_phone,s_address,s_email,s_password,register_no,branch_id,hod_id,s_photo,s_resume} = req.body
+            const {  s_name,s_phone,s_address,s_email,register_no,branch_id,hod_id} = req.body
             const newData = {}
         
             if (s_name) { newData.s_name = s_name }
@@ -108,16 +123,15 @@ const Update = async (req, res) => {
             if (branch_id) { newData.branch_id = branch_id }
             if (register_no) { newData.register_no = register_no }
             if (hod_id) { newData.hod_id = hod_id }
-            if (s_photo) { newData.s_photo = s_photo }
-            if (s_resume) { newData.hod_id = hod_id }
             
+            if (req.files && req.files['s_photo']) {
+                newData.s_photo = req.files['s_photo'][0].filename;
+            }
+            if (req.files && req.files['s_resume']) {
+                newData.s_resume = req.files['s_resume'][0].filename;
+            }
             
         
-            if (s_password) {
-                const salt = await bcryptjs.genSalt(10)
-                const secpass = await bcryptjs.hash(s_password, salt)
-                {newData.s_password = secpass}
-            }
             const UpdatedData = await studentSchema.findByIdAndUpdate(id, { $set: newData }, { new: true });
             return res.json({ success: true, UpdatedData })
         }
@@ -129,4 +143,4 @@ const Update = async (req, res) => {
     }
 }
 
-module.exports = { Register,Get,Update,Delete }
+module.exports = { Register,Get,Update,Delete,GetById }

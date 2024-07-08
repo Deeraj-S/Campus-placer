@@ -43,7 +43,7 @@ const Login = async (req, res) => {
                 const data = checkhod.id
                 console.log(data)
                 const token = await jwt.sign(data, process.env.JWT_SECRET) // we have to pass two things id ad secreat key
-                return res.json({ success: true, message: "Login successfull", token, name: checkhod.h_name, role: "hod" })
+                return res.json({ success: true, message: "Login successfull", token, name: checkhod.h_name, role: "hod",id:checkhod.id })
             }
 
         }
@@ -58,7 +58,7 @@ const Login = async (req, res) => {
                 const data = checkPlacement_officer.id
                 console.log(data)
                 const token = await jwt.sign(data, process.env.JWT_SECRET) // we have to pass two things id ad secreat key
-                return res.json({ success: true, message: "Login successfull", token, name: checkPlacement_officer.p_name, role: "placement_officer" })
+                return res.json({ success: true, message: "Login successfull", token, name: checkPlacement_officer.p_name, role: "placement_officer",id:checkPlacement_officer.id })
             }
 
         }
@@ -74,7 +74,7 @@ const Login = async (req, res) => {
                 const data = checkStudent.id
                 console.log(data)
                 const token = await jwt.sign(data, process.env.JWT_SECRET) // we have to pass two things id ad secreat key
-                return res.json({ success: true, message: "Login successfull", token, name: checkStudent.s_name, role: "student" })
+                return res.json({ success: true, message: "Login successfull", token, name: checkStudent.s_name, role: "student" ,id:checkStudent.id})
             }
 
         }

@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect, useRef } from 'react';
+import { NavLink } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   CContainer,
   CDropdown,
@@ -13,8 +13,8 @@ import {
   CNavLink,
   CNavItem,
   useColorModes,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
 import {
   cilBell,
   cilContrast,
@@ -23,24 +23,26 @@ import {
   cilMenu,
   cilMoon,
   cilSun,
-} from '@coreui/icons'
+} from '@coreui/icons';
 
-import { AppBreadcrumb } from './index'
-import { AppHeaderDropdown } from './header/index'
+import { AppBreadcrumb } from './index';
+import { AppHeaderDropdown, AppHeaderDropdownStudent,AppHeaderDropdownHod,AppHeaderDropdownPO } from './header/index';
 
 const AppHeader = () => {
-  const headerRef = useRef()
-  const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
+  const headerRef = useRef();
+  const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme');
 
-  const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const dispatch = useDispatch();
+  const sidebarShow = useSelector((state) => state.sidebarShow);
+
+  const role = JSON.parse(localStorage.getItem('role'));
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
       headerRef.current &&
-        headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
-    })
-  }, [])
+        headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0);
+    });
+  }, []);
 
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
@@ -52,15 +54,14 @@ const AppHeader = () => {
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderNav className="d-none d-md-flex">
-          {/* <CNavItem> */}
-            {/* <CNavLink to="/dashboard" as={NavLink}>
+          {/* <CNavItem>
+            <CNavLink to="/dashboard" as={NavLink}>
               Dashboard
-            </CNavLink> */}
-          {/* </CNavItem>
+            </CNavLink>
+          </CNavItem>
           <CNavItem>
             <CNavLink href="#">Users</CNavLink>
           </CNavItem> */}
-         
         </CHeaderNav>
         
         <CHeaderNav>
@@ -110,14 +111,23 @@ const AppHeader = () => {
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
-          <AppHeaderDropdown />
+          {role === 'student' ? (
+              <AppHeaderDropdownStudent />
+            ) : role === 'admin' ? (
+              <AppHeaderDropdown />
+            ) : role === 'placement_officer' ? (
+              <AppHeaderDropdownPO />
+            ) : role === 'hod' ? (
+              <AppHeaderDropdownHod />
+            ) : null}
+
         </CHeaderNav>
       </CContainer>
       <CContainer className="px-4" fluid>
         <AppBreadcrumb />
       </CContainer>
     </CHeader>
-  )
-}
+  );
+};
 
-export default AppHeader
+export default AppHeader;

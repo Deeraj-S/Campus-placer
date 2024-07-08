@@ -275,6 +275,7 @@ const JobsDescription = ({ role }) => {
 
     return (
         <CRow>
+            
             <CCol xs={12}>
                 <CCard className="mb-4">
                     <CCardHeader>
@@ -298,7 +299,7 @@ const JobsDescription = ({ role }) => {
                             <strong>Job Role:</strong> {jobs.job_role}
                         </CCardText>
                         <CCardText>
-                            <strong>Category:</strong> {jobs.category_id.j_category}
+                        <strong>Category:</strong> {jobs.category_id?.j_category || 'Loading...'}
                         </CCardText>
                         <CCardText>
                             <strong>Job Description:</strong> {jobs.job_discription}

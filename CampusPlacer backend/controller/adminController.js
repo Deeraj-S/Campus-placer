@@ -102,7 +102,7 @@ const Update = async (req, res) => {
                 newData.password = secpass
             }
             if (req?.file?.filename) {
-                newData.h_photo = req?.file?.filename
+                newData.image = req?.file?.filename
             }
             const UpdatedData = await adminSchema.findByIdAndUpdate(id, { $set: newData }, { new: true });
             return res.json({ success: true, UpdatedData })
