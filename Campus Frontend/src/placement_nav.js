@@ -46,6 +46,12 @@ const _nav = [
         to: '/jobs',
         icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
     },
+    {
+        component: CNavItem,
+        name: 'Applications',
+        to: '/Applications',
+        icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
+    },
 
 ]
 

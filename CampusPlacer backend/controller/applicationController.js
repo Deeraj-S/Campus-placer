@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const applicationSchema = require('../models/applicationSchema');
 const branchSchema = require('../models/branch'); // Ensure you have the branch schema correctly imported
 const studentSchema = require('../models/student'); // Ensure you have the student schema correctly imported
@@ -62,9 +63,76 @@ const getApplicationsById = async (req, res) => {
     }
 }
 
+const checkApplicationStatus = async (req, res) => {
+    try {
+        const { student_id, job_id } = req.params;
+        //console.log(`Checking application status for student_id: ${student_id}, job_id: ${job_id}`);
+        
+        const application = await applicationSchema.findOne({ student_id, job_id, ap_status: 'Applied' });
+
+        if (application) {
+            //console.log('Application found with status Applied:', application);
+            return res.status(200).json({ applied: true });
+        } else {
+            //console.log('No application found with status Applied');
+            return res.status(200).json({ applied: false });
+        }
+    } catch (err) {
+        console.error('Error checking application status:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+const getAppliedJobs = async (req, res) => {
+    try {
+        const { student_id } = req.params;
+        const applications = await applicationSchema.find({ student_id }).populate(["student_id", "job_id", "course_id"]);
+        res.json({ success: true, applications });
+    } catch (err) {
+        console.log("Error:" + err.message);
+        res.send("Internal server error");
+    }
+};
+
+const GetJobByObj = async (req, res) => {
+    try {
+        const jobId = req.params.id
+        const job = await joblistSchema.findById(jobId);
+        res.json({ job });
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid Job ID' });
+    }
+};
+
+const GetStudentByObj = async (req, res) => {
+    try {
+        const studentId = req.params.id
+        const job = await studentSchema.findById(studentId);
+        res.json({ job });
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid Job ID' });
+    }
+};
+
+const GetBranchByObj = async (req, res) => {
+    try {
+        const branchId = req.params.id
+        const job = await branchSchema.findById(branchId);
+        res.json({ job });
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid Job ID' });
+    }
+};
+
 module.exports = {
     insertApplication,
     getApplications,
-    getApplicationsById
+    getApplicationsById,
+    checkApplicationStatus,
+    getAppliedJobs,
+    GetJobByObj,
+    GetBranchByObj,
+    GetStudentByObj
+    
     
 };

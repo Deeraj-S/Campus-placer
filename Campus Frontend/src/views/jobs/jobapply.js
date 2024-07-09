@@ -1,4 +1,4 @@
-
+import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -108,21 +108,23 @@ const ApplyJob = () => {
         data.append('experience', formData.experience);
         data.append('course_id', formData.course_id);
 
-        // console.log('Submit Data:', {
-        //     student_id: localStorage.getItem('id'),
-        //     job_id: id,
-        //     resume: formData.resume,
-        //     YOG: formData.YOG,
-        //     CGPA: formData.CGPA,
-        //     experience: formData.experience,
-        //     course_id: formData.course_id
-        // });
+        console.log('Submit Data:', {
+            student_id: localStorage.getItem('id'),
+            job_id: id,
+            resume: formData.resume,
+            YOG: formData.YOG,
+            CGPA: formData.CGPA,
+            experience: formData.experience,
+            course_id: formData.course_id
+        });
 
         axios.post('http://localhost:5000/api/application/insert', data)
             .then((res) => {
                 if (res.data.success) {
                     alert('Application submitted successfully');
-                } else {
+                    window.location.href = 'http://localhost:3000/#/jobs';
+                } 
+                else {
                     alert(res.data.message);
                 }
             })
@@ -165,7 +167,62 @@ const ApplyJob = () => {
                         />
                     </div>
                     <div className="mb-3">
-                        <CFormLabel htmlFor="resume">Resume</CFormLabel>
+                        <CFormLabel htmlFor="s_name">Your Name</CFormLabel>
+                        <CFormInput
+                            value={formData.s_name}
+                            type="text"
+                            name="s_name"
+                            id="s_name"
+                            placeholder="Student Name"
+                            readOnly
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="s_email">Your Email</CFormLabel>
+                        <CFormInput
+                            value={formData.s_email}
+                            type="text"
+                            name="s_email"
+                            id="s_email"
+                            placeholder="Student Email"
+                            
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="s_phone">Your Contact</CFormLabel>
+                        <CFormInput
+                            value={formData.s_phone}
+                            type="text"
+                            name="s_phone"
+                            id="s_phone"
+                            placeholder="Student Phone"
+                            readOnly
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="register_no">Your Register Number</CFormLabel>
+                        <CFormInput
+                            value={formData.register_no}
+                            type="text"
+                            name="register_no"
+                            id="register_no"
+                            placeholder="Register Number"
+                            readOnly
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="s_address">Your Address</CFormLabel>
+                        <CFormInput
+                            value={formData.s_address}
+                            type="text"
+                            name="s_address"
+                            id="s_address"
+                            placeholder="Address"
+                            readOnly
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <CFormLabel htmlFor="resume">Upload Your Resume</CFormLabel>
                         <CFormInput
                             type="file"
                             name='resume'
@@ -200,10 +257,10 @@ const ApplyJob = () => {
                         />
                     </div>
                     <div className="mb-3">
-                        <CFormLabel htmlFor="experience">Experience</CFormLabel>
+                        <CFormLabel htmlFor="experience">Year of Experience</CFormLabel>
                         <CFormInput
                             //value={formData.experience}
-                            type="text"
+                            type="number"
                             name="experience"
                             id="experience"
                             placeholder="Experience"
@@ -221,61 +278,7 @@ const ApplyJob = () => {
                         </CFormSelect>
                     </div>
                     {/* Read-only student details */}
-                    <div className="mb-3">
-                        <CFormLabel htmlFor="s_name">Student Name</CFormLabel>
-                        <CFormInput
-                            value={formData.s_name}
-                            type="text"
-                            name="s_name"
-                            id="s_name"
-                            placeholder="Student Name"
-                            
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <CFormLabel htmlFor="s_email">Student Email</CFormLabel>
-                        <CFormInput
-                            value={formData.s_email}
-                            type="text"
-                            name="s_email"
-                            id="s_email"
-                            placeholder="Student Email"
-                            
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <CFormLabel htmlFor="s_phone">Student Phone</CFormLabel>
-                        <CFormInput
-                            value={formData.s_phone}
-                            type="text"
-                            name="s_phone"
-                            id="s_phone"
-                            placeholder="Student Phone"
-                            
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <CFormLabel htmlFor="register_no">Register Number</CFormLabel>
-                        <CFormInput
-                            value={formData.register_no}
-                            type="text"
-                            name="register_no"
-                            id="register_no"
-                            placeholder="Register Number"
-                            
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <CFormLabel htmlFor="s_address">Address</CFormLabel>
-                        <CFormInput
-                            value={formData.s_address}
-                            type="text"
-                            name="s_address"
-                            id="s_address"
-                            placeholder="Address"
-                            
-                        />
-                    </div>
+                   
                     <CButton type="submit" color="primary">Apply</CButton>
                 </CForm>
             </CCardBody>
