@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken');
 const env = require('dotenv');
 env.config();
 
+const nodemailer = require("nodemailer");
+
 const insertApplication = async (req, res) => {
     try {
         const { student_id, resume, job_id, ap_status, ap_date, course_id, YOG, CGPA, experience } = req.body;
@@ -21,9 +23,12 @@ const insertApplication = async (req, res) => {
             return res.json({ success: false, message: "Invalid references" });
         }
 
+        let job_email = job.company_email;
+        let std_email = student.s_email;
+
         const application = new applicationSchema({
             student_id,
-            resume:req.file.filename,
+            resume: req.file.filename,
             job_id,
             ap_status,
             ap_date,
@@ -31,21 +36,52 @@ const insertApplication = async (req, res) => {
             YOG,
             CGPA,
             experience
-
         });
 
         await application.save();
+
+        const transporter = nodemailer.createTransport({
+            service: "Gmail",
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: "campusplacers@gmail.com",
+                pass: "vnxt pdgk gcer ubth",
+            },
+            tls: {
+                rejectUnauthorized: false, // Add this line to accept self-signed certificates
+            },
+        });
+
+        const mailOptions = {
+            from: "campusplacers@gmail.com",
+            to: job_email,
+            subject: "Hello from Nodemailer",
+            text: `This is a test email sent using Nodemailer. Student email: ${std_email}`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error("Error sending email: ", error);
+            } else {
+                console.log("Email sent: ", info.response);
+            }
+        });
+
         return res.json({ success: true, application });
     } catch (err) {
         console.log("Error:" + err.message);
         res.send("Internal server error");
     }
-}
+};
+
+module.exports = insertApplication;
 
 
 const getApplications = async (req, res) => {
     try {
-        const applications = await applicationSchema.find().populate(["student_id" ,"job_id" ,"course_id"]);
+        const applications = await applicationSchema.find().populate(["student_id", "job_id", "course_id"]);
         res.json({ success: true, applications });
     } catch (err) {
         console.log("Error:" + err.message);
@@ -54,8 +90,8 @@ const getApplications = async (req, res) => {
 }
 const getApplicationsById = async (req, res) => {
     try {
-        const id =req.params.id
-        const applications = await applicationSchema.findById(id).populate(["student_id" ,"job_id" ,"course_id"]);
+        const id = req.params.id
+        const applications = await applicationSchema.findById(id).populate(["student_id", "job_id", "course_id"]);
         res.json({ success: true, applications });
     } catch (err) {
         console.log("Error:" + err.message);
@@ -67,7 +103,7 @@ const checkApplicationStatus = async (req, res) => {
     try {
         const { student_id, job_id } = req.params;
         //console.log(`Checking application status for student_id: ${student_id}, job_id: ${job_id}`);
-        
+
         const application = await applicationSchema.findOne({ student_id, job_id, ap_status: 'Applied' });
 
         if (application) {
@@ -133,6 +169,6 @@ module.exports = {
     GetJobByObj,
     GetBranchByObj,
     GetStudentByObj
-    
-    
+
+
 };

@@ -65,6 +65,7 @@ const EditJobModal = ({ item, setJobs }) => {
         setChange(true);
         const formData = new FormData();
         formData.append("company_name", newJobs.company_name);
+        formData.append("company_email", newJobs.company_email);
         formData.append("job_title", newJobs.job_title);
         formData.append("job_role", newJobs.job_role);
         formData.append("category_id", newJobs.category_id);
@@ -116,6 +117,18 @@ const EditJobModal = ({ item, setJobs }) => {
                                 name="company_name"
                                 id="company_name"
                                 placeholder="Edit Company Name"
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <CFormLabel htmlFor="company_email">Company Email</CFormLabel>
+                            <CFormInput
+                                value={newJobs.company_email}
+                                type="text"
+                                name="company_email"
+                                id="company_email"
+                                placeholder="Edit Company Email"
                                 onChange={handleChange}
                                 required
                             />

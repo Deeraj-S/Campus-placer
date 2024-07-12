@@ -27,6 +27,9 @@ const AppliedJobs = () => {
         return <h1>No applied jobs found</h1>;
     }
 
+  
+
+
     return (
         <CRow>
             {applications.map(application => (
@@ -36,7 +39,7 @@ const AppliedJobs = () => {
                             <strong>Applied Job</strong>
                         </CCardHeader>
                         <CCardBody>
-                            <CCardImage orientation="top" style={{ height: "200px", width: "100%", objectFit: "cover" }} src={`http://localhost:5000/api/upload/${application.job_id.cover_photo}`} />
+                            {/* <CCardImage orientation="top" style={{ height: "200px", width: "100%", objectFit: "cover" }} src={`http://localhost:5000/api/upload/${application.job_id.cover_photo}`} /> */}
                             <CCardText><strong>Company Name:</strong> {application.job_id.company_name}</CCardText>
                             <CCardText><strong>Job Title:</strong> {application.job_id.job_title}</CCardText>
                             <CCardText><strong>Job Role:</strong> {application.job_id.job_role}</CCardText>

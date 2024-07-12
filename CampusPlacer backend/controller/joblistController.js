@@ -6,14 +6,14 @@ env.config()
 const JobInsert = async (req, res) => {
     try {
 
-        const { company_name, job_title, job_role, category_id, job_discription, salary, shifts, experience, last_date, cover_photo } = req.body
+        const { company_name,company_email, job_title, job_role, category_id, job_discription, salary, shifts, experience, last_date, cover_photo } = req.body
         //console.log(req.file.filename)
         const check = await joblistSchema.find({ company_name: company_name })
         if (check.length > 0) {
             return res.json({ success: false, message: "Company already exists" })
         }
         else {
-            const jobList = await joblistSchema({ company_name, job_title, job_role, category_id, job_discription, salary, shifts, experience, cover_photo, last_date, cover_photo: req.file.filename })
+            const jobList = await joblistSchema({ company_name,company_email, job_title, job_role, category_id, job_discription, salary, shifts, experience, cover_photo, last_date, cover_photo: req.file.filename })
 
             await jobList.save()
             return res.json({ success: true, savedjobs: jobList })
@@ -72,11 +72,12 @@ const Update = async (req, res) => {
         if (!check) {
             res.json({ success: false, message: "not found" })
         } else {
-            const { company_name, job_title, job_role, category_id, job_discription, salary, shifts, experience, last_date } = req.body
+            const { company_name,company_email, job_title, job_role, category_id, job_discription, salary, shifts, experience, last_date } = req.body
             const newData = {}
             //const salt = await bcryptjs.genSalt(10)
             //const secpass = await bcryptjs.hash(password, salt)
             if (company_name) { newData.company_name = company_name }
+            if (company_email) { newData.company_email = company_email}
             if (job_title) { newData.job_title = job_title }
             if (job_role) { newData.job_role = job_role }
             if (category_id) { newData.category_id = category_id }

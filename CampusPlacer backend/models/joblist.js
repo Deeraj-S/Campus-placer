@@ -8,6 +8,12 @@ const joblistSchema = new Schema({
         required: true
     },
 
+    company_email:{
+        type:String,
+        required:true
+
+    },
+
     job_title: {
         type: String,
         require: true

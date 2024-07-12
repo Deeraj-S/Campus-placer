@@ -53,6 +53,9 @@ const Tables = ({ role }) => {
                       {item.salary}
                     </CCardText>
 
+                    <CCardText>
+                      {item.company_email}
+                    </CCardText>
 
                     <CButton key={index + 1} color="primary" onClick={() => navigate(`/jobs/discription/${item._id}`)} >
                       Job Description

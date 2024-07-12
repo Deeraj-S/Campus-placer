@@ -23,6 +23,7 @@ const FC = () => {
     e.preventDefault()
     const formData = new FormData()
     formData.append("company_name", jobs.company_name)
+    formData.append("company_email", jobs.company_email)
     formData.append("job_title", jobs.job_title)
     formData.append("job_role", jobs.job_role)
     formData.append("category_id", jobs.category_id)
@@ -82,6 +83,17 @@ const FC = () => {
                   id="company_name"
                   name='company_name'
                   placeholder="Enter company name"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <CFormLabel htmlFor="company_email">Company Email</CFormLabel>
+                <CFormInput
+                  type="text"
+                  id="company_email"
+                  name='company_email'
+                  placeholder="Enter company email"
                   onChange={handleChange}
                   required
                 />
