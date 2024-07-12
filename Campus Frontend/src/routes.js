@@ -66,7 +66,7 @@ const Jobs = React.lazy(() => import('./views/jobs/Jobs.js'))
 const JobsInsert = React.lazy(() => import('./views/jobs/insert.js'))
 const JobsDiscription = React.lazy(() => import('./views/jobs/discription.js'))
 const JobApply = React.lazy(() => import('./views/jobs/jobapply.js'))
-const appliedJobs = React.lazy(() => import('./views/jobs/appliedJobs.js'))
+const appliedjobs = React.lazy(() => import('./views/jobs/appliedjobs.js'))
 const applications = React.lazy(() => import('./views/jobs/applications.js'))
 
 const routes = [
@@ -88,7 +88,7 @@ const routes = [
   { path: '/jobs/insert', name: 'Insert', element: JobsInsert },
   { path: '/jobs/discription/:id', name: 'Discription', element: JobsDiscription },
   { path: '/jobs/apply/:id', name: 'Apply', element: JobApply },
-  { path: '/appliedJobs', name: 'Applied', element: appliedJobs },
+  { path: '/appliedJobs', name: 'Applied', element: appliedjobs },
   { path: '/Applications', name: 'Applied', element: applications },
 
   { path: '/category', name: 'CATEGORY', element: Category },
