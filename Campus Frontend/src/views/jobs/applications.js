@@ -19,14 +19,23 @@ import {
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { CButton, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CFormSelect } from '@coreui/react';
 
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = useState(false);
-
+  const handleChange = (appId, status) => {
+    axios.put(`http://localhost:5000/api/application/update/${appId}`, { status })
+    .then((res)=>{
+      console.log(res)
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  }
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow sx={{ height: "200px", '& > *': { borderBottom: 'unset' } }}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -52,7 +61,15 @@ function Row(props) {
           </a>
         </TableCell>
         <TableCell>{new Date(row.ap_date).toLocaleDateString()}</TableCell>
-        <TableCell style={{color:'green'}}>{row.ap_status}</TableCell>
+        <TableCell style={{ color: 'green' }}>{row.ap_status}</TableCell>
+        <TableCell style={{ color: 'green' }}>
+          <CFormSelect onChange={(e) => handleChange(row?._id, e?.target?.value)} aria-label="Default select example">
+            <option value="">Status</option>
+            <option value="approved">Approve</option>
+            <option value="rejected">Reject</option>
+
+          </CFormSelect>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -194,53 +211,53 @@ const Applications = () => {
 
   return (
     <Paper >
-            <Box display="flex" alignItems="center" justifyContent="space-between" p={2}>
-            <Box display="flex" alignItems="center" sx={{ minWidth: '250px' }}>
-            <Typography variant="subtitle2" sx={{ color: 'gray', mr: 1 }}>
-                Filter by Company Name:
-            </Typography>
-            <Select
-                label="Company Name"
-                value={filters.companyName}
-                onChange={handleFilterChange}
-                name="companyName"
-                variant="outlined"
-                sx={{ minWidth: '150px', mr: 1 }}
-            >
-                {companyNames.map(name => (
-                <MenuItem key={name} value={name}>{name}</MenuItem>
-                ))}
-            </Select>
-            </Box>
-    
-                <Box display="flex" alignItems="center" sx={{ minWidth: '250px' }}>
-                <Typography variant="subtitle2" sx={{ color: 'gray', mr: 1 }}>
-                    Filter by Register Number:
-                </Typography>
-                <Select
-                    label="Register Number"
-                    value={filters.registerNumber}
-                    onChange={handleFilterChange}
-                    name="registerNumber"
-                    variant="outlined"
-                    sx={{ minWidth: '150px', mr: 1 }}
-                >
-                    <MenuItem value="">All Register Numbers</MenuItem>
-                    {registerNumbers.map(number => (
-                    <MenuItem key={number} value={number}>{number}</MenuItem>
-                    ))}
-                </Select>
-                </Box>
-                    
-                <Box>
-                <Button variant="contained" onClick={applyFilters} sx={{ mr: 1 }}>
-                    Apply Filters
-                </Button>
-                <Button variant="outlined" onClick={clearFilters}>
-                    Clear Filters
-                </Button>
-                </Box>
-                </Box>
+      <Box display="flex" alignItems="center" justifyContent="space-between" p={2}>
+        <Box display="flex" alignItems="center" sx={{ minWidth: '250px' }}>
+          <Typography variant="subtitle2" sx={{ color: 'gray', mr: 1 }}>
+            Filter by Company Name:
+          </Typography>
+          <Select
+            label="Company Name"
+            value={filters.companyName}
+            onChange={handleFilterChange}
+            name="companyName"
+            variant="outlined"
+            sx={{ minWidth: '150px', mr: 1 }}
+          >
+            {companyNames.map(name => (
+              <MenuItem key={name} value={name}>{name}</MenuItem>
+            ))}
+          </Select>
+        </Box>
+
+        <Box display="flex" alignItems="center" sx={{ minWidth: '250px' }}>
+          <Typography variant="subtitle2" sx={{ color: 'gray', mr: 1 }}>
+            Filter by Register Number:
+          </Typography>
+          <Select
+            label="Register Number"
+            value={filters.registerNumber}
+            onChange={handleFilterChange}
+            name="registerNumber"
+            variant="outlined"
+            sx={{ minWidth: '150px', mr: 1 }}
+          >
+            <MenuItem value="">All Register Numbers</MenuItem>
+            {registerNumbers.map(number => (
+              <MenuItem key={number} value={number}>{number}</MenuItem>
+            ))}
+          </Select>
+        </Box>
+
+        <Box>
+          <Button variant="contained" onClick={applyFilters} sx={{ mr: 1 }}>
+            Apply Filters
+          </Button>
+          <Button variant="outlined" onClick={clearFilters}>
+            Clear Filters
+          </Button>
+        </Box>
+      </Box>
 
 
       <TableContainer>

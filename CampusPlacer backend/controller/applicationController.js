@@ -160,8 +160,62 @@ const GetBranchByObj = async (req, res) => {
     }
 };
 
+const UpdateStatus = async (req, res) => {
+    try {
+        const AppId = req.params.id
+        const { status } = req.body
+        const application = await applicationSchema.findById(AppId).populate(`student_id`);
+
+        if (!application) {
+            return res.json({ success: false, message: "application not found" })
+        }
+        else {
+            let newdata = {}
+            if (status) { newdata.ap_status = status }
+            const updated = await applicationSchema.findByIdAndUpdate(AppId, { $set: newdata }, { new: true })
+
+
+            const student_email = application?.student_id?.s_email;
+            console.log(student_email)
+            const transporter = nodemailer.createTransport({
+                service: "Gmail",
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true,
+                auth: {
+                    user: "campusplacers@gmail.com",
+                    pass: "vnxt pdgk gcer ubth",
+                },
+                tls: {
+                    rejectUnauthorized: false, // Add this line to accept self-signed certificates
+                },
+            });
+
+            const mailOptions = {
+                from: "campusplacers@gmail.com",
+                to: student_email,
+                subject: "Hello from Nodemailer",
+                text: `Your Application is ${status}`,
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error("Error sending email: ", error);
+                } else {
+                    console.log("Email sent: ", info.response);
+                }
+            });
+
+            return res.json({ success: true, updated })
+        }
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid Job ID' });
+    }
+};
+
 module.exports = {
     insertApplication,
+    UpdateStatus,
     getApplications,
     getApplicationsById,
     checkApplicationStatus,

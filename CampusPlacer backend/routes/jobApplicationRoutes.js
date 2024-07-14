@@ -8,7 +8,8 @@ const {
     getAppliedJobs,
     GetJobByObj,
     GetStudentByObj,
-    GetBranchByObj
+    GetBranchByObj,
+    UpdateStatus,
 } = require('../controller/applicationController');
 const routes = express.Router();
 
@@ -32,5 +33,6 @@ routes.get('/applied/:student_id', getAppliedJobs);
 routes.get('/job/get/:id', GetJobByObj);
 routes.get('/student/get/:id', GetStudentByObj);
 routes.get('/branch/get/:id', GetBranchByObj);
+routes.put('/update/:id', UpdateStatus);
 
 module.exports = routes;
