@@ -24,7 +24,7 @@ const _nav = [
     {
         component: CNavItem,
         name: 'HOD Dashboard',
-        to: '/',
+        to: '/dashboardHOD',
         icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
 
     },

@@ -26,7 +26,7 @@ import {
 } from '@coreui/react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Tables = () => {
+const Tables = (role) => {
   const [student, setStudent] = useState([]);
   const [change, setChange] = useState(false);
   const navigate = useNavigate();
@@ -109,10 +109,11 @@ const Tables = () => {
     }, []);
 
     return (
-      <>
+      <>{role=='admin' && 'hod'(
         <CButton color="primary" onClick={() => setVisible(!visible)}>
           Edit
         </CButton>
+        )}
         <CModal scrollable visible={visible} onClose={() => setVisible(false)}>
           <CModalHeader>
             <CModalTitle>Edit Student</CModalTitle>
@@ -255,7 +256,9 @@ const Tables = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>STUDENTS</strong>
+            {role=='admin' && 'hod'(
             <CButton color="info" onClick={() => navigate('/student/insert')}>Add new Student</CButton>
+          )}
           </CCardHeader>
           <CCardBody>
             <CTable responsive="sm" hover>
@@ -271,7 +274,9 @@ const Tables = () => {
                   <CTableHeaderCell scope="col">HOD Name</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Image</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Resume</CTableHeaderCell>
+                  {role=='admin' &&'hod'(
                   <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                )}
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -289,9 +294,11 @@ const Tables = () => {
                     <CTableDataCell><a href={`http://localhost:5000/api/upload/resume/${item.s_resume}`} target="_blank" rel="noopener noreferrer">Resume</a></CTableDataCell>
                     <CTableDataCell className="d-flex">
                       <Edit item={item} />
+                      {role=='admin' && 'hod'(
                       <CButton color="danger" onClick={() => handleDelete(item._id)}>
                         Delete
                       </CButton>
+                      )}
                     </CTableDataCell>
                   </CTableRow>
                 ))}

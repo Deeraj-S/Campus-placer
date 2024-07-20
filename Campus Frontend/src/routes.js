@@ -70,12 +70,16 @@ const appliedJobs = React.lazy(() => import('./views/jobs/appliedJobs.js'))
 const applications = React.lazy(() => import('./views/jobs/applications.js'))
 
 const dashboardStudent = React.lazy(() => import('./views/widgets/dashboardStudent.js'))
+const dashboardPo = React.lazy(() => import('./views/widgets/dashboardPo.js'))
+const dashboardHOD = React.lazy(() => import('./views/widgets/dashboardHOD.js'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   // ch
   { path: '/student', name: 'Student', element: student },
   { path: '/student/insert', name: 'Student', element: StudentInsert },
-  { path: '/dashboardStudent', name: 'Student', element: dashboardStudent },
+  { path: '/dashboardStudent', name: 'Dashboard Student', element: dashboardStudent },
+  { path: '/dashboardPo', name: 'Dashboard PO', element: dashboardPo },
+  { path: '/dashboardHOD', name: 'Dasboard HOD', element: dashboardHOD },
 
 
   { path: '/branch', name: 'Branch', element: Branch },

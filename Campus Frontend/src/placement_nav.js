@@ -14,8 +14,8 @@ let role = JSON.parse(localStorage.getItem('role'))
 const _nav = [
     {
         component: CNavItem,
-        name: 'Placement Dashboard',
-        to: '/',
+        name: 'PO Dashboard',
+        to: '/dashboardPo',
         icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
 
     },

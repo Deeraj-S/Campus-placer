@@ -31,17 +31,19 @@ const AppSidebar = ({ role }) => {
         dispatch({ type: 'set', sidebarShow: visible });
       }}
     >
-      <CSidebarHeader className="border-bottom">
-        {/* Displaying the image using an <img> tag */}
-        <CSidebarBrand to="/">
-          {/* <img src={img} alt="Logo" height={32} /> */}
-        </CSidebarBrand>
-        <CCloseButton
-          className="d-lg-none"
-          dark
-          onClick={() => dispatch({ type: 'set', sidebarShow: false })}
-        />
-      </CSidebarHeader>
+<CSidebarHeader className="border-bottom">
+  <CSidebarBrand className="d-md-down-none" style={{ textDecoration: 'none', fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', fontFamily: 'Arial, sans-serif', textTransform: 'uppercase', letterSpacing: '1px', paddingLeft: '5px' }}>
+    Campus Placer
+  </CSidebarBrand>
+  <CCloseButton
+    className="d-lg-none"
+    dark
+    onClick={() => dispatch({ type: 'set', sidebarShow: false })}
+  />
+</CSidebarHeader>
+
+
+
 
       {/* Conditional rendering of sidebar navigation based on role */}
       {role === 'admin' ? (
