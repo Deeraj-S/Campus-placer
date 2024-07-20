@@ -66,7 +66,7 @@ const Jobs = React.lazy(() => import('./views/jobs/Jobs.js'))
 const JobsInsert = React.lazy(() => import('./views/jobs/insert.js'))
 const JobsDiscription = React.lazy(() => import('./views/jobs/discription.js'))
 const JobApply = React.lazy(() => import('./views/jobs/jobapply.js'))
-const appliedJobs = React.lazy(() => import('./views/jobs/appliedJobs.js'))
+const appliedJobs = React.lazy(() => import('./views/jobs/appliedjobs.js'))
 const applications = React.lazy(() => import('./views/jobs/applications.js'))
 
 const dashboardStudent = React.lazy(() => import('./views/widgets/dashboardStudent.js'))
