@@ -31,7 +31,7 @@ app.use("/api/job", require('./routes/joblistRoutes'))
 app.use("/api/all", require('./routes/loginRoutes'))
 app.use('/api', countsRouter)
 app.use('/api/application', require('./routes/jobApplicationRoutes'))
-app.use('api/forgotpassword', require('./routes/forgotPasswordRoutes'))
+app.use('/api/forgotpassword', require('./routes/forgotPasswordRoutes'))
 app.use('/api/newpassword', require('./routes/newPasswordRoutes'))
 
 //app.use(cors({origin:"http://localhost:3000",methods:["GET","POST"]}))
