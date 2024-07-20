@@ -42,7 +42,7 @@ const Otp = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         if (otp.otp === localotp) {
-            navigate('/newpassword', { state: { email: email } })
+            navigate('/new-password', { state: { email: email } })
         }
         else {
             alert("Invalid OTP")

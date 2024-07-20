@@ -49,7 +49,7 @@ const Login = ({ setRole }) => {
           let id = res.data.id
           localStorage.setItem("token", JSON.stringify(token))
           localStorage.setItem("role", JSON.stringify(rolee))
-          localStorage.setItem("id",JSON.stringify(id))
+          localStorage.setItem("id", JSON.stringify(id))
           setRole(rolee)
           navigate('/')
         }
@@ -94,7 +94,7 @@ const Login = ({ setRole }) => {
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
+                        <CButton color="link" className="px-0" onClick={() => navigate('/forgot-password')}>
                           Forgot password?
                         </CButton>
                       </CCol>
