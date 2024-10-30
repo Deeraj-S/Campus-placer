@@ -26,7 +26,7 @@ import {
 } from '@coreui/react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Tables = (role) => {
+const Tables = ({ role }) => {
   const [student, setStudent] = useState([]);
   const [change, setChange] = useState(false);
   const navigate = useNavigate();
@@ -109,11 +109,11 @@ const Tables = (role) => {
     }, []);
 
     return (
-      <>{role=='admin' && 'hod'(
+      <>{role == 'hod' &&
         <CButton color="primary" onClick={() => setVisible(!visible)}>
           Edit
         </CButton>
-        )}
+      }
         <CModal scrollable visible={visible} onClose={() => setVisible(false)}>
           <CModalHeader>
             <CModalTitle>Edit Student</CModalTitle>
@@ -256,9 +256,9 @@ const Tables = (role) => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>STUDENTS</strong>
-            {role=='admin' && 'hod'(
-            <CButton color="info" onClick={() => navigate('/student/insert')}>Add new Student</CButton>
-          )}
+            {role === 'hod' &&
+              <CButton color="info" onClick={() => navigate('/student/insert')}>Add new Student</CButton>
+            }
           </CCardHeader>
           <CCardBody>
             <CTable responsive="sm" hover>
@@ -274,9 +274,9 @@ const Tables = (role) => {
                   <CTableHeaderCell scope="col">HOD Name</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Image</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Resume</CTableHeaderCell>
-                  {role=='admin' &&'hod'(
-                  <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                )}
+                  {role == 'hod' &&
+                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                  }
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -293,12 +293,16 @@ const Tables = (role) => {
                     <CTableDataCell><img style={{ height: "50px", width: "50px", objectFit: "cover" }} src={`http://localhost:5000/api/upload/photo/${item.s_photo}`} alt="Student" /></CTableDataCell>
                     <CTableDataCell><a href={`http://localhost:5000/api/upload/resume/${item.s_resume}`} target="_blank" rel="noopener noreferrer">Resume</a></CTableDataCell>
                     <CTableDataCell className="d-flex">
+
+
                       <Edit item={item} />
-                      {role=='admin' && 'hod'(
-                      <CButton color="danger" onClick={() => handleDelete(item._id)}>
-                        Delete
-                      </CButton>
-                      )}
+
+                      {role === 'hod' &&
+
+                        <CButton color="danger" onClick={() => handleDelete(item._id)}>
+                          Delete
+                        </CButton>
+                      }
                     </CTableDataCell>
                   </CTableRow>
                 ))}
