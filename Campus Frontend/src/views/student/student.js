@@ -109,7 +109,7 @@ const Tables = ({ role }) => {
     }, []);
 
     return (
-      <>{role == 'hod' &&
+      <>{role == 'admin' &&
         <CButton color="primary" onClick={() => setVisible(!visible)}>
           Edit
         </CButton>
@@ -256,7 +256,7 @@ const Tables = ({ role }) => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>STUDENTS</strong>
-            {role === 'hod' &&
+            {role === 'admin' &&
               <CButton color="info" onClick={() => navigate('/student/insert')}>Add new Student</CButton>
             }
           </CCardHeader>
@@ -274,7 +274,7 @@ const Tables = ({ role }) => {
                   <CTableHeaderCell scope="col">HOD Name</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Image</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Resume</CTableHeaderCell>
-                  {role == 'hod' &&
+                  {role == 'admin' &&
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                   }
                 </CTableRow>
@@ -297,7 +297,7 @@ const Tables = ({ role }) => {
 
                       <Edit item={item} />
 
-                      {role === 'hod' &&
+                      {role === 'admin' &&
 
                         <CButton color="danger" onClick={() => handleDelete(item._id)}>
                           Delete

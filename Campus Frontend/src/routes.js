@@ -1,3 +1,4 @@
+import { element } from 'prop-types'
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
@@ -72,9 +73,19 @@ const applications = React.lazy(() => import('./views/jobs/applications.js'))
 const dashboardStudent = React.lazy(() => import('./views/widgets/dashboardStudent.js'))
 const dashboardPo = React.lazy(() => import('./views/widgets/dashboardPo.js'))
 const dashboardHOD = React.lazy(() => import('./views/widgets/dashboardHOD.js'))
+
+const role = React.lazy(() => import('./views/role/Role.js'))
+const roleInsert = React.lazy(() => import('./views/role/Insert.js'))
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   // ch
+
+  { path: '/role', name: 'Role', element: role },
+  { path: '/role/insert', name: 'Role', element: roleInsert },
+
+
+
   { path: '/student', name: 'Student', element: student },
   { path: '/student/insert', name: 'Student', element: StudentInsert },
   { path: '/dashboardStudent', name: 'Dashboard Student', element: dashboardStudent },
