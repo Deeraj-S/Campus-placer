@@ -9,11 +9,9 @@ import {
   CFormInput,
   CFormLabel,
   CFormSelect,
-  CFormTextarea,
   CRow,
 } from '@coreui/react'
 import axios from 'axios'
-//import { DocsExample } from 'src/components'
 import { useNavigate } from 'react-router-dom';
 
 const FC = () => {
@@ -26,10 +24,9 @@ const FC = () => {
     formData.append("s_email", student.s_email)
     formData.append("s_phone", student.s_phone)
     formData.append("s_password", student.s_password)
-    formData.append("s_address", student.s_address)
+    formData.append("role_id", student.role_id)
     formData.append("register_no", student.register_no)
     formData.append("branch_id", student.branch_id)
-    formData.append("hod_id", student.hod_id)
     formData.append("s_photo", student.s_photo)
     formData.append("s_resume", student.s_resume)
 
@@ -47,7 +44,19 @@ const FC = () => {
         console.log(err, 22222)
       })
   }
-  
+
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/roles/get")
+      .then((res) => {
+        setRoles(res.data.roles);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
   const [branch, setBranch] = useState([])
   useEffect(() => {
     axios.get("http://localhost:5000/api/branch/get")
@@ -70,6 +79,11 @@ const FC = () => {
       });
   }, []);
 
+
+
+
+
+
   const handleChange = (e) => {
     setStudent({ ...student, [e.target.name]: e.target.value })
   }
@@ -77,7 +91,7 @@ const FC = () => {
     setStudent({ ...student, [e.target.name]: e.target.files[0] })
   }
 
- 
+
 
 
 
@@ -137,16 +151,18 @@ const FC = () => {
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="h_address">Student Address</CFormLabel>
-                <CFormInput
-                  type="text"
-                  id="s_address"
-                  name='s_address'
-                  placeholder="Enter address"
-                  onChange={handleChange}
-                  required
-                />
+                <CFormLabel htmlFor="role_id">Role</CFormLabel>
+                <CFormSelect name='role_id' id="role_id" onChange={handleChange} >
+                  <option value="">Select Role</option>
+                  {roles.map((item) => {
+                    return (
+                      <option value={item._id}>{item.role_name}</option>
+                    )
+                  })}
+                </CFormSelect>
               </div>
+
+              {/* change here */}
 
               <div className="mb-3">
                 <CFormLabel htmlFor="register_no">Student RegNo</CFormLabel>
@@ -167,18 +183,6 @@ const FC = () => {
                   {branch.map((item) => {
                     return (
                       <option value={item._id}>{item.branch_name}</option>
-                    )
-                  })}
-                </CFormSelect>
-              </div>
-
-              <div className="mb-3">
-                <CFormLabel htmlFor="hod_id">HOD</CFormLabel>
-                <CFormSelect name='hod_id' id="hod_id" onChange={handleChange} >
-                  <option value="">Select HOD</option>
-                  {hod.map((item) => {
-                    return (
-                      <option value={item._id}>{item.h_name}</option>
                     )
                   })}
                 </CFormSelect>

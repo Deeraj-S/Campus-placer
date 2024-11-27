@@ -2,25 +2,14 @@ import React from 'react'
 import CIcon from '@coreui/icons-react'
 //import std from './assets/images/icons/std1.png'
 import {
-  cilBell,
-  cilCalculator,
-  cilChartPie,
-  cilCursor,
-  cilDescription,
-  cilDrop,
-  cilNotes,
-  cilPencil,
-  cilPuzzle,
-  cilPeople,
-  cilSpeedometer,
-  cilStar,
+
   cilGroup,
   cilUser,
-  cilHouse,
+
 
 
 } from '@coreui/icons'
-import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import { CNavItem, CNavTitle } from '@coreui/react'
 
 let role = JSON.parse(localStorage.getItem('role'))
 
@@ -59,12 +48,6 @@ const _nav = [
     icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
   },
 
-  {
-    component: CNavItem,
-    name: 'Hod',
-    to: '/Hod',
-    icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
-  },
 
   {
     component: CNavItem,

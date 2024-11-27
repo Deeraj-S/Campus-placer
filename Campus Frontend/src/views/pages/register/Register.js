@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CButton,
   CCard,
@@ -10,6 +10,8 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CFormSelect,
+  CFormLabel
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
@@ -42,6 +44,8 @@ const Register = () => {
     formData.append("phone", register_details.phone)
     formData.append("password", register_details.password)
     formData.append("profile", register_details.profile)
+    formData.append("role_id", register_details.role_id)
+
 
     axios.post("http://localhost:5000/api/admin/insert", formData)
       .then((res) => {
@@ -59,6 +63,18 @@ const Register = () => {
       })
 
   }
+
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/roles/get")
+      .then((res) => {
+        setRoles(res.data.roles);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
@@ -96,6 +112,17 @@ const Register = () => {
                     <CInputGroupText>@</CInputGroupText>
                     <CFormInput type='file' name='profile' onChange={handleImage} />
                   </CInputGroup>
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="role_id">Role</CFormLabel>
+                    <CFormSelect name='role_id' id="role_id" onChange={handleChange} >
+                      <option value="">Select Role</option>
+                      {roles.map((item) => {
+                        return (
+                          <option value={item._id}>{item.role_name}</option>
+                        )
+                      })}
+                    </CFormSelect>
+                  </div>
                   <div className="d-grid">
                     <CButton color="success" onClick={handleSubmit}>Create Account</CButton>
                   </div>

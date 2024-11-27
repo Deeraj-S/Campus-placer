@@ -22,6 +22,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CFormSelect,
 } from '@coreui/react';
 import { useNavigate } from 'react-router-dom';
 
@@ -89,19 +90,21 @@ const Tables = () => {
             <CForm>
               <div className="mb-3">
                 <CFormLabel htmlFor="role_name">Role Name</CFormLabel>
-                <CFormInput
-                  value={newRole.role_name}
-                  type="text"
-                  name="role_name"
+                <CFormSelect
                   id="role_name"
-                  placeholder="Edit role name"
-                  onChange={handleChange}
+                  value={newRole}
+                  onChange={(e) => setRoleName(e.target.value)}
                   required
-                />
+                >
+                  <option value="" disabled>Select Role</option>
+                  <option value="admin">Admin</option>
+                  <option value="placement_officer">Placement Officer</option>
+                  <option value="student">Student</option>
+                </CFormSelect>
               </div>
               <div className="mb-3">
                 <CFormLabel>Permissions</CFormLabel>
-                {['manage-users', 'view-dashboard', 'add-roles', 'edit-roles', 'view-reports'].map((permission) => (
+                {['view-students', 'add-students', 'edit-students', 'delete-students', 'view-branch', 'add-branch', 'edit-branch', 'delete-branch', 'view-placement-officer', 'add-placement-officer', 'edit-placement-officer', 'delete-placement-officer', 'view-job-category', 'add-job-category', 'edit-job-category', 'delete-job-category', 'view-jobs', 'add-jobs', 'edit-jobs', 'delete-jobs', 'apply-jobs'].map((permission) => (
                   <div key={permission} className="form-check">
                     <input
                       className="form-check-input"
@@ -170,7 +173,6 @@ const Tables = () => {
                     <CTableDataCell>{item.permissions.join(', ')}</CTableDataCell>
                     <CTableDataCell>
                       <Edit item={item} />
-                      <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>
                     </CTableDataCell>
                   </CTableRow>
                 ))}

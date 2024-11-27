@@ -30,7 +30,35 @@ const EditJobModal = ({ item, setJobs }) => {
     const [visible, setVisible] = useState(false);
     const [newJobs, setNewJobs] = useState(item);
     const [category, setCategory] = useState([]);
+    const [permission, setPermission] = useState([]);
     const [change, setChange] = useState(false);
+
+
+
+    const roleId = localStorage.getItem('role_id').replace(/['"]+/g, '');
+
+    useEffect(() => {
+
+        axios.get(`http://localhost:5000/api/roles/get/${roleId}`)
+            .then((res) => {
+                const roleData = res.data.role;
+                const rolePermissions = res.data.role.permissions
+
+                if (roleData) {
+                    setPermission(rolePermissions);
+                } else {
+                    console.warn('No role data found for the given role ID.');
+                }
+            })
+            .catch((err) => {
+                console.error('Error fetching role data:', err);
+            });
+
+    }, [roleId]);
+
+    const hasPermission = (permissionId) => {
+        return permission.includes(permissionId);
+    };
 
     useEffect(() => {
         axios.get("http://localhost:5000/api/category/get")
@@ -43,15 +71,21 @@ const EditJobModal = ({ item, setJobs }) => {
     }, []);
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/job/get/${id}`)
-            .then((res) => {
-                setJobs(res.data.jobList);
-                console.log(res.data.jobList);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    }, [id]);
+        if (hasPermission('view-jobs')) {
+
+            axios.get(`http://localhost:5000/api/job/get/${id}`)
+                .then((res) => {
+                    setJobs(res.data.jobList);
+                    console.log(res.data.jobList);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+
+    }, [id, permission]);
+
+
 
     const handleChange = (e) => {
         setNewJobs({ ...newJobs, [e.target.name]: e.target.value });
@@ -97,10 +131,12 @@ const EditJobModal = ({ item, setJobs }) => {
     };
 
     return (
-        <>
+        <>{hasPermission('edit-jobs') &&
+
             <CButton color="primary" onClick={() => setVisible(!visible)}>
                 Edit
             </CButton>
+        }
 
             <CModal scrollable visible={visible} onClose={() => setVisible(false)}>
                 <CModalHeader>
@@ -270,10 +306,14 @@ const DeleteJobModal = ({ item, setJobs }) => {
     };
 
     return (
-        <CButton style={{ marginLeft: "10px" }} color="danger" onClick=
-        {() => handleDelete(item._id)}>
-            Delete
-        </CButton>
+        <>
+            < CButton style={{ marginLeft: "10px" }} color="danger" onClick=
+                {() => handleDelete(item._id)}>
+                Delete
+            </CButton >
+
+
+        </>
     );
 };
 
@@ -283,18 +323,49 @@ const JobsDescription = ({ role }) => {
     const { id } = useParams();
     const [jobs, setJobs] = useState(null);
     const [applied, setApplied] = useState(false);
+    const [permission, setPermission] = useState([]);
     const navigate = useNavigate();
 
+
+    const roleId = localStorage.getItem('role_id').replace(/['"]+/g, '');
+
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/job/get/${id}`)
+
+        axios.get(`http://localhost:5000/api/roles/get/${roleId}`)
             .then((res) => {
-                setJobs(res.data.jobList);
-                console.log(res.data.jobList);
+                const roleData = res.data.role;
+                const rolePermissions = res.data.role.permissions
+
+                if (roleData) {
+                    setPermission(rolePermissions);
+                } else {
+                    console.warn('No role data found for the given role ID.');
+                }
             })
             .catch((err) => {
-                console.error(err);
+                console.error('Error fetching role data:', err);
             });
-    }, [id]);
+
+    }, [roleId]);
+
+
+
+    useEffect(() => {
+        if (hasPermission('view-jobs')) {
+            axios.get(`http://localhost:5000/api/job/get/${id}`)
+                .then((res) => {
+                    setJobs(res.data.jobList);
+                    console.log(res.data.jobList);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+    }, [id, permission]);
+
+    const hasPermission = (permissionId) => {
+        return permission.includes(permissionId);
+    };
 
     useEffect(() => {
         if (role === 'student') {
@@ -321,6 +392,7 @@ const JobsDescription = ({ role }) => {
                         <strong>Job Description</strong>
                     </CCardHeader>
                     <CCardBody>
+
                         <br />
                         <CCardImage orientation="top" style={{ height: "200px", width: "200px" }} src={`http://localhost:5000/api/upload/${jobs.cover_photo}`} />
                         <br />
@@ -357,12 +429,13 @@ const JobsDescription = ({ role }) => {
                         </CCardText>
                         <div>
                             {role === "placement_officer" && <EditJobModal item={jobs} setJobs={setJobs} />}
-                            {role === "placement_officer" && <DeleteJobModal item={jobs} setJobs={setJobs} />}
+                            {hasPermission('delete-jobs') && <DeleteJobModal item={jobs} setJobs={setJobs} />}
 
-                            {role === "student" && (
+                            {hasPermission('apply-jobs') && (
                                 applied ? (
                                     <CButton className="custom-blue-button" disabled>Applied</CButton>
                                 ) : (
+
                                     <CButton className="custom-blue-button" onClick={() => navigate(`/jobs/apply/${jobs._id}`)}>Apply Now</CButton>
                                 )
                             )}

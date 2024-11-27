@@ -59,10 +59,8 @@ const AppHeaderDropdownStudent = () => {
     s_password: '',
     s_photo: '',
     s_resume: '',
-    s_address: '',
     register_no: '',
     branch_id: '',
-    hod_id: '',
   });
   const [isEditing, setIsEditing] = useState(false);
   const [newImage, setNewImage] = useState(null);
@@ -96,10 +94,9 @@ const AppHeaderDropdownStudent = () => {
             s_password: foundStudent.s_password,
             s_photo: foundStudent.s_photo,
             s_resume: foundStudent.s_resume,
-            s_address: foundStudent.s_address,
             register_no: foundStudent.register_no,
             branch_id: foundStudent.branch_id,
-            hod_id: foundStudent.hod_id,
+
           });
         } else {
           console.error('Student details not found');
@@ -146,8 +143,8 @@ const AppHeaderDropdownStudent = () => {
         newFormData.append('s_name', formData.s_name);
         newFormData.append('s_email', formData.s_email);
         newFormData.append('s_phone', formData.s_phone);
-        newFormData.append('s_address', formData.s_address);
-        
+
+
 
         if (newImage) {
           newFormData.append('s_photo', newImage);
@@ -254,17 +251,7 @@ const AppHeaderDropdownStudent = () => {
                   readOnly={!isEditing}
                 />
               </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="s_address">Address</CFormLabel>
-                <CFormInput
-                  type="text"
-                  id="s_address"
-                  name="s_address"
-                  value={formData.s_address}
-                  onChange={handleInputChange}
-                  readOnly={!isEditing}
-                />
-              </div>
+
               <div className="mb-3">
                 <CFormLabel htmlFor="register_no">Your Register No</CFormLabel>
                 <CFormInput
@@ -285,16 +272,7 @@ const AppHeaderDropdownStudent = () => {
                   readOnly
                 />
               </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="hod_id">Your HOD</CFormLabel>
-                <CFormInput
-                  type="text"
-                  id="hod_id"
-                  name="hod_id"
-                  value={formData.hod_id.h_name}
-                  readOnly
-                />
-              </div>
+
               <div className="mb-3">
                 <CFormLabel htmlFor="s_resume" style={{ marginRight: '16px' }}>Your Resume</CFormLabel>
                 {!isEditing ? (

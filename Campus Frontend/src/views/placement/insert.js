@@ -26,7 +26,7 @@ const FC = () => {
     formData.append("p_phone", placement_officer.p_phone)
     formData.append("p_email", placement_officer.p_email)
     formData.append("p_password", placement_officer.p_password)
-    formData.append("p_address", placement_officer.p_address)
+    formData.append("role_id", placement_officer.role_id)
     formData.append("p_photo", placement_officer.p_photo)
 
     axios.post("http://localhost:5000/api/placement/insert", formData)
@@ -43,6 +43,18 @@ const FC = () => {
         console.log(err, 22222)
       })
   }
+
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/roles/get")
+      .then((res) => {
+        setRoles(res.data.roles);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
 
   const handleChange = (e) => {
@@ -107,15 +119,15 @@ const FC = () => {
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="p_address">Address</CFormLabel>
-                <CFormInput
-                  type="text"
-                  id="p_address"
-                  name='p_address'
-                  placeholder="Enter address"
-                  onChange={handleChange}
-                  required
-                />
+                <CFormLabel htmlFor="role_id">Role</CFormLabel>
+                <CFormSelect name='role_id' id="role_id" onChange={handleChange} >
+                  <option value="">Select Role</option>
+                  {roles.map((item) => {
+                    return (
+                      <option value={item._id}>{item.role_name}</option>
+                    )
+                  })}
+                </CFormSelect>
               </div>
               <div className="mb-3">
                 <CFormLabel htmlFor="p_photo">Placement Officer Photo</CFormLabel>

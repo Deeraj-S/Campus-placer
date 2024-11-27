@@ -6,7 +6,7 @@ env.config()
 const AdminInsert = async (req, res) => {
     try {
 
-        const { name, email, phone, password } = req.body
+        const { name, email, phone, password, role_id } = req.body
         //console.log(req.file.filename)
         const check = await adminSchema.find({ email })
         if (check.length > 0) {
@@ -18,7 +18,7 @@ const AdminInsert = async (req, res) => {
             const secpass = await bcryptjs.hash(password, salt)
             console.log(secpass)
 
-            const admin = await adminSchema({ name, email, phone, password: secpass, image: req.file.filename })
+            const admin = await adminSchema({ name, email, phone, password: secpass, image: req.file.filename, role_id })
 
             await admin.save()
             return res.json({ success: true, savedUser: admin })
@@ -33,7 +33,7 @@ const AdminInsert = async (req, res) => {
 const Get = async (req, res) => {
     try {
         const id = req.params.id;  // Get the ID from the request parameters
-        const admin = await adminSchema.findById(id);  // Find the admin by ID
+        const admin = await adminSchema.findById(id).populate(["role_id"]);  // Find the admin by ID
 
         if (!admin) {
             return res.status(404).json({ success: false, message: 'Admin not found' });

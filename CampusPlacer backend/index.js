@@ -33,6 +33,8 @@ app.use('/api', countsRouter)
 app.use('/api/application', require('./routes/jobApplicationRoutes'))
 app.use('/api/forgotpassword', require('./routes/forgotpasswordRoutes'))
 app.use('/api/newpassword', require('./routes/newpasswordRoutes'))
+app.use('/api/roles', require('./routes/roleRoutes'));
+
 
 
 

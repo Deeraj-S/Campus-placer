@@ -2,6 +2,7 @@ const adminSchema = require('../models/admin');
 const hodSchema = require('../models/hod');
 const placementSchema = require('../models/placement')
 const studentSchema = require('../models/student')
+const Role = require('../models/roles')
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const env = require('dotenv')
@@ -26,9 +27,13 @@ const Login = async (req, res) => {
 
             else {
                 const data = checkadmin.id
+                const role_id = checkadmin.role_id
+                const role = await Role.findById(role_id)
+
+
                 console.log(data)
                 const token = await jwt.sign(data, process.env.JWT_SECRET) // we have to pass two things id ad secreat key
-                return res.json({ success: true, message: "Login successfull", token, name: checkadmin.name, role: "admin" ,id:checkadmin.id})
+                return res.json({ success: true, message: "Login successfull", token, name: checkadmin.name, id: checkadmin.id, role_id: role_id, role: role.role_name })
             }
 
         }
@@ -43,7 +48,7 @@ const Login = async (req, res) => {
                 const data = checkhod.id
                 console.log(data)
                 const token = await jwt.sign(data, process.env.JWT_SECRET) // we have to pass two things id ad secreat key
-                return res.json({ success: true, message: "Login successfull", token, name: checkhod.h_name, role: "hod",id:checkhod.id })
+                return res.json({ success: true, message: "Login successfull", token, name: checkhod.h_name, role: "hod", id: checkhod.id })
             }
 
         }
@@ -56,9 +61,11 @@ const Login = async (req, res) => {
 
             else {
                 const data = checkPlacement_officer.id
+                const role_id = checkPlacement_officer.role_id
+                const role = await Role.findById(role_id)
                 console.log(data)
                 const token = await jwt.sign(data, process.env.JWT_SECRET) // we have to pass two things id ad secreat key
-                return res.json({ success: true, message: "Login successfull", token, name: checkPlacement_officer.p_name, role: "placement_officer",id:checkPlacement_officer.id })
+                return res.json({ success: true, message: "Login successfull", token, name: checkPlacement_officer.p_name, id: checkPlacement_officer.id, role_id: role_id, role: role.role_name })
             }
 
         }
@@ -72,9 +79,11 @@ const Login = async (req, res) => {
 
             else {
                 const data = checkStudent.id
+                const role_id = checkStudent.role_id
+                const role = await Role.findById(role_id)
                 console.log(data)
                 const token = await jwt.sign(data, process.env.JWT_SECRET) // we have to pass two things id ad secreat key
-                return res.json({ success: true, message: "Login successfull", token, name: checkStudent.s_name, role: "student" ,id:checkStudent.id})
+                return res.json({ success: true, message: "Login successfull", token, name: checkStudent.s_name, role: role.role_name, id: checkStudent.id, role_id: role_id })
             }
 
         }

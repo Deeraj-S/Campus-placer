@@ -27,17 +27,47 @@ import { useNavigate } from 'react-router-dom';
 
 const Tables = () => {
   const [category, setCategory] = useState([]);
+  const [permission, setPermission] = useState([]);
   const navigate = useNavigate();
 
+
+  const roleId = localStorage.getItem('role_id').replace(/['"]+/g, '');
+
   useEffect(() => {
-    axios.get("http://localhost:5000/api/category/get")
+
+    axios.get(`http://localhost:5000/api/roles/get/${roleId}`)
       .then((res) => {
-        setCategory(res.data.category);
+        const roleData = res.data.role;
+        const rolePermissions = res.data.role.permissions
+
+        if (roleData) {
+          setPermission(rolePermissions);
+        } else {
+          console.warn('No role data found for the given role ID.');
+        }
       })
       .catch((err) => {
-        console.error(err);
+        console.error('Error fetching role data:', err);
       });
-  }, []);
+
+  }, [roleId]);
+
+
+  useEffect(() => {
+    if (hasPermission('view-job-category')) {
+      axios.get("http://localhost:5000/api/category/get")
+        .then((res) => {
+          setCategory(res.data.category);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [permission]);
+
+  const hasPermission = (permissionId) => {
+    return permission.includes(permissionId);
+  };
 
   const Edit = ({ item }) => {
     const [visible, setVisible] = useState(false);
@@ -66,10 +96,11 @@ const Tables = () => {
     };
 
     return (
-      <>
+      <>{hasPermission('edit-job-category') &&
         <CButton color="primary" onClick={() => setVisible(!visible)}>
           Edit
         </CButton>
+      }
         <CModal scrollable visible={visible} onClose={() => setVisible(false)}>
           <CModalHeader>
             <CModalTitle>Edit Category</CModalTitle>
@@ -124,35 +155,44 @@ const Tables = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>Job Category</strong>
-            <CButton color="info" onClick={() => navigate('/category/insert')}>Add new job category</CButton>
+            {hasPermission('add-job-category') && (
+              <CButton color="info" onClick={() => navigate('/category/insert')}>Add new job category</CButton>
+            )}
           </CCardHeader>
           <CCardBody>
-            <CTable>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">SI.NO</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Job Category Name</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Date</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Status</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Action</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {category.map((item, index) => (
-                  <CTableRow key={item._id}>
-                    <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
-                    <CTableDataCell>{item.j_category}</CTableDataCell>
-                    <CTableDataCell>{item.j_date}</CTableDataCell>
-                    <CTableDataCell>{item.j_status}</CTableDataCell>
-                    <CTableDataCell>
-                      <Edit item={item} />
-                      <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>
-                    </CTableDataCell>
+            {hasPermission('view-job-category') ? (
+              <CTable>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">SI.NO</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Job Category Name</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Status</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Action</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {category.map((item, index) => (
+                    <CTableRow key={item._id}>
+                      <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
+                      <CTableDataCell>{item.j_category}</CTableDataCell>
+                      <CTableDataCell>{item.j_date}</CTableDataCell>
+                      <CTableDataCell>{item.j_status}</CTableDataCell>
+                      <CTableDataCell>
+                        {hasPermission('edit-job-category') && (
+                          <Edit item={item} />)}
+                        {hasPermission('delete-job-category') && (
+                          <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>)}
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            ) : (
+              <p>You do not have permission to view job category.</p>
+            )}
           </CCardBody>
+
         </CCard>
       </CCol>
     </CRow>

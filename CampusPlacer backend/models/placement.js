@@ -18,9 +18,10 @@ const placementSchema = new Schema({
         required: true
     },
 
-    p_address: {
-        type: String,
-        required: true
+    role_id: {
+        type: mongoose.Types.ObjectId,
+        ref: "roles"
+
     },
 
     p_password: {

@@ -17,7 +17,6 @@ import {
   CRow,
   CTable,
   CTableBody,
-  CTableCaption,
   CTableDataCell,
   CTableHead,
   CTableHeaderCell,
@@ -27,17 +26,48 @@ import { useNavigate } from 'react-router-dom';
 
 const Tables = () => {
   const [branch, setBranch] = useState([]);
+  const [permission, setPermission] = useState([])
   const navigate = useNavigate();
 
+
+  const roleId = localStorage.getItem('role_id').replace(/['"]+/g, '');
+
+
   useEffect(() => {
-    axios.get("http://localhost:5000/api/branch/get")
+
+    axios.get(`http://localhost:5000/api/roles/get/${roleId}`)
       .then((res) => {
-        setBranch(res.data.branch);
+        const roleData = res.data.role;
+        const rolePermissions = res.data.role.permissions
+
+
+
+        if (roleData) {
+          setPermission(rolePermissions);
+        } else {
+          console.warn('No role data found for the given role ID.');
+        }
       })
       .catch((err) => {
-        console.error(err);
+        console.error('Error fetching role data:', err);
       });
-  }, []);
+
+  }, [roleId]);
+
+  useEffect(() => {
+    if (hasPermission('view-branch'))
+      axios.get("http://localhost:5000/api/branch/get")
+        .then((res) => {
+          setBranch(res.data.branch);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+  }, [permission]);
+
+  const hasPermission = (permissionId) => {
+    return permission.includes(permissionId);
+  };
 
   const Edit = ({ item }) => {
     const [visible, setVisible] = useState(false);
@@ -66,10 +96,11 @@ const Tables = () => {
     };
 
     return (
-      <>
+      <>{hasPermission('edit-branch') &&
         <CButton color="primary" onClick={() => setVisible(!visible)}>
           Edit
         </CButton>
+      }
         <CModal scrollable visible={visible} onClose={() => setVisible(false)}>
           <CModalHeader>
             <CModalTitle>Edit Branch</CModalTitle>
@@ -124,34 +155,44 @@ const Tables = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>Branch</strong>
-            <CButton color="info" onClick={() => navigate('/branch/insert')}>Add new branch</CButton>
+            {hasPermission('add-branch') && (
+              <CButton color="info" onClick={() => navigate('/branch/insert')}>Add new branch</CButton>
+            )}
           </CCardHeader>
           <CCardBody>
-            <CTable>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">SI.NO</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Branch Name</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Date</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Status</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Action</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {branch.map((item, index) => (
-                  <CTableRow key={item._id}>
-                    <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
-                    <CTableDataCell>{item.branch_name}</CTableDataCell>
-                    <CTableDataCell>{item.b_date}</CTableDataCell>
-                    <CTableDataCell>{item.b_status}</CTableDataCell>
-                    <CTableDataCell>
-                      <Edit item={item} />
-                      <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>
-                    </CTableDataCell>
+            {hasPermission('view-branch') ? (
+              <CTable>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">SI.NO</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Branch Name</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Date</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Status</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Action</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {branch.map((item, index) => (
+                    <CTableRow key={item._id}>
+                      <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
+                      <CTableDataCell>{item.branch_name}</CTableDataCell>
+                      <CTableDataCell>{item.b_date}</CTableDataCell>
+                      <CTableDataCell>{item.b_status}</CTableDataCell>
+                      <CTableDataCell>
+                        {hasPermission('edit-branch') && (
+                          <Edit item={item} />
+                        )}
+                        {hasPermission('delete-branch') && (
+                          <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>
+                        )}
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            ) : (
+              <p>You do not have permission to view branch.</p>
+            )}
           </CCardBody>
         </CCard>
       </CCol>

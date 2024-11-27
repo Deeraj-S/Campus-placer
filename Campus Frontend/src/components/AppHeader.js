@@ -26,7 +26,7 @@ import {
 } from '@coreui/icons';
 
 import { AppBreadcrumb } from './index';
-import { AppHeaderDropdown, AppHeaderDropdownStudent,AppHeaderDropdownHod,AppHeaderDropdownPO } from './header/index';
+import { AppHeaderDropdown, AppHeaderDropdownStudent, AppHeaderDropdownHod, AppHeaderDropdownPO } from './header/index';
 
 const AppHeader = () => {
   const headerRef = useRef();
@@ -54,16 +54,9 @@ const AppHeader = () => {
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderNav className="d-none d-md-flex">
-          {/* <CNavItem>
-            <CNavLink to="/dashboard" as={NavLink}>
-              Dashboard
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
-          </CNavItem> */}
+
         </CHeaderNav>
-        
+
         <CHeaderNav>
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
@@ -112,14 +105,14 @@ const AppHeader = () => {
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
           {role === 'student' ? (
-              <AppHeaderDropdownStudent />
-            ) : role === 'admin' ? (
-              <AppHeaderDropdown />
-            ) : role === 'placement_officer' ? (
-              <AppHeaderDropdownPO />
-            ) : role === 'hod' ? (
-              <AppHeaderDropdownHod />
-            ) : null}
+            <AppHeaderDropdownStudent />
+          ) : role === 'admin' ? (
+            <AppHeaderDropdown />
+          ) : role === 'placement_officer' ? (
+            <AppHeaderDropdownPO />
+          ) : role === 'hod' ? (
+            <AppHeaderDropdownHod />
+          ) : null}
 
         </CHeaderNav>
       </CContainer>

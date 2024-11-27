@@ -8,7 +8,7 @@ import {
   CCol,
   CForm,
   CFormInput,
-  CFormLabel,
+
   CModal,
   CModalBody,
   CModalFooter,
@@ -23,23 +23,55 @@ import {
   CTableHeaderCell,
   CTableRow,
   CFormSelect,
+  CFormLabel
 } from '@coreui/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const Tables = ({ role }) => {
+const Tables = () => {
   const [student, setStudent] = useState([]);
   const [change, setChange] = useState(false);
+  const [permission, setPermission] = useState([]);
   const navigate = useNavigate();
 
+
+  const roleId = localStorage.getItem('role_id').replace(/['"]+/g, '');
+
   useEffect(() => {
-    axios.get("http://localhost:5000/api/student/get")
+
+    axios.get(`http://localhost:5000/api/roles/get/${roleId}`)
       .then((res) => {
-        setStudent(res.data.student);
+        const roleData = res.data.role;
+        const rolePermissions = res.data.role.permissions
+
+        if (roleData) {
+          setPermission(rolePermissions);
+        } else {
+          console.warn('No role data found for the given role ID.');
+        }
       })
       .catch((err) => {
-        console.error(err);
+        console.error('Error fetching role data:', err);
       });
-  }, [change]);
+
+  }, [roleId]);
+
+
+  useEffect(() => {
+    if (hasPermission('view-students')) {
+      axios.get("http://localhost:5000/api/student/get")
+        .then((res) => {
+          setStudent(res.data.student);
+        })
+        .catch((err) => {
+          console.error("Error fetching students:", err);
+        });
+    }
+  }, [permission]);
+
+  const hasPermission = (permissionId) => {
+    return permission.includes(permissionId);
+  };
+
 
   const Edit = ({ item }) => {
     const [visible, setVisible] = useState(false);
@@ -59,10 +91,9 @@ const Tables = ({ role }) => {
       formData.append("s_name", newStudent.s_name);
       formData.append("s_email", newStudent.s_email);
       formData.append("s_phone", newStudent.s_phone);
-      formData.append("s_address", newStudent.s_address);
+      formData.append("role_id", newStudent.role_id);
       formData.append("register_no", newStudent.register_no);
       formData.append("branch_id", newStudent.branch_id);
-      formData.append("hod_id", newStudent.hod_id);
       formData.append("s_photo", newStudent.s_photo);
       formData.append("s_resume", newStudent.s_resume);
 
@@ -86,6 +117,18 @@ const Tables = ({ role }) => {
         });
     };
 
+    const [roles, setRoles] = useState([]);
+    useEffect(() => {
+      axios
+        .get("http://localhost:5000/api/roles/get")
+        .then((res) => {
+          setRoles(res.data.roles);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }, []);
+
     const [branch, setBranch] = useState([]);
     useEffect(() => {
       axios.get("http://localhost:5000/api/branch/get")
@@ -97,19 +140,9 @@ const Tables = ({ role }) => {
         });
     }, [change]);
 
-    const [hod, setHod] = useState([]);
-    useEffect(() => {
-      axios.get("http://localhost:5000/api/hod/get")
-        .then((res) => {
-          setHod(res.data.hod);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }, []);
 
     return (
-      <>{role == 'admin' &&
+      <>{hasPermission('edit-students') &&
         <CButton color="primary" onClick={() => setVisible(!visible)}>
           Edit
         </CButton>
@@ -157,16 +190,15 @@ const Tables = ({ role }) => {
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="s_address">Address</CFormLabel>
-                <CFormInput
-                  value={newStudent.s_address}
-                  type="text"
-                  name="s_address"
-                  id="s_address"
-                  placeholder="Edit address"
-                  onChange={handleChange}
-                  required
-                />
+                <CFormLabel htmlFor="role_id">Role</CFormLabel>
+                <CFormSelect name='role_id' id="role_id" onChange={handleChange} >
+                  <option value="">Select Role</option>
+                  {roles.map((item) => {
+                    return (
+                      <option value={item._id}>{item.role_name}</option>
+                    )
+                  })}
+                </CFormSelect>
               </div>
               <div className="mb-3">
                 <CFormLabel htmlFor="register_no">Register No</CFormLabel>
@@ -189,15 +221,7 @@ const Tables = ({ role }) => {
                   ))}
                 </CFormSelect>
               </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="hod_id">HOD</CFormLabel>
-                <CFormSelect name='hod_id' id="hod_id" onChange={handleChange}>
-                  <option value="">Select HOD</option>
-                  {hod.map((item) => (
-                    <option key={item._id} value={item._id}>{item.h_name}</option>
-                  ))}
-                </CFormSelect>
-              </div>
+
               <div className="mb-3">
                 <CFormLabel htmlFor="s_photo">Profile Photo</CFormLabel>
                 <CFormInput
@@ -233,6 +257,7 @@ const Tables = ({ role }) => {
     );
   };
 
+
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       axios.delete(`http://localhost:5000/api/student/delete/${id}`)
@@ -250,64 +275,68 @@ const Tables = ({ role }) => {
     }
   };
 
+
+
+
+
+
+
+
   return (
     <CRow>
       <CCol xs={12}>
-        <CCard className="mb-4">
+        <CCard>
           <CCardHeader className="d-flex justify-content-between align-items-center">
-            <strong>STUDENTS</strong>
-            {role === 'admin' &&
+            <strong>Students</strong>
+            {hasPermission('add-students') && (
               <CButton color="info" onClick={() => navigate('/student/insert')}>Add new Student</CButton>
-            }
+            )}
           </CCardHeader>
           <CCardBody>
-            <CTable responsive="sm" hover>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">SI.NO</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Student Name</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Phone</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Email</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Address</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Reg No</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Branch Name</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">HOD Name</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Image</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Resume</CTableHeaderCell>
-                  {role == 'admin' &&
-                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                  }
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {student.map((item, index) => (
-                  <CTableRow key={item._id}>
-                    <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
-                    <CTableDataCell>{item.s_name}</CTableDataCell>
-                    <CTableDataCell>{item.s_phone}</CTableDataCell>
-                    <CTableDataCell>{item.s_email}</CTableDataCell>
-                    <CTableDataCell>{item.s_address}</CTableDataCell>
-                    <CTableDataCell>{item.register_no}</CTableDataCell>
-                    <CTableDataCell>{item.branch_id.branch_name}</CTableDataCell>
-                    <CTableDataCell>{item.hod_id.h_name}</CTableDataCell>
-                    <CTableDataCell><img style={{ height: "50px", width: "50px", objectFit: "cover" }} src={`http://localhost:5000/api/upload/photo/${item.s_photo}`} alt="Student" /></CTableDataCell>
-                    <CTableDataCell><a href={`http://localhost:5000/api/upload/resume/${item.s_resume}`} target="_blank" rel="noopener noreferrer">Resume</a></CTableDataCell>
-                    <CTableDataCell className="d-flex">
+            {hasPermission('view-students') ? (
+              <CTable responsive>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">SI.NO</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Student Name</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Phone</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Email</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Role</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Reg No</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Branch Name</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Image</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Resume</CTableHeaderCell>
 
-
-                      <Edit item={item} />
-
-                      {role === 'admin' &&
-
-                        <CButton color="danger" onClick={() => handleDelete(item._id)}>
-                          Delete
-                        </CButton>
-                      }
-                    </CTableDataCell>
+                    <CTableHeaderCell>Actions</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {student.map((item, index) => (
+                    <CTableRow key={item._id}>
+                      <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
+                      <CTableDataCell>{item.s_name}</CTableDataCell>
+                      <CTableDataCell>{item.s_phone}</CTableDataCell>
+                      <CTableDataCell>{item.s_email}</CTableDataCell>
+                      <CTableDataCell>{item.role_id.role_name}</CTableDataCell>
+                      <CTableDataCell>{item.register_no}</CTableDataCell>
+                      <CTableDataCell>{item.branch_id.branch_name}</CTableDataCell>
+                      <CTableDataCell><img style={{ height: "50px", width: "50px", objectFit: "cover" }} src={`http://localhost:5000/api/upload/photo/${item.s_photo}`} alt="Student" /></CTableDataCell>
+                      <CTableDataCell><a href={`http://localhost:5000/api/upload/resume/${item.s_resume}`} target="_blank" rel="noopener noreferrer">Resume</a></CTableDataCell>
+                      <CTableDataCell>
+                        {hasPermission('edit-students') && (
+                          <Edit item={item} />
+                        )}
+                        {hasPermission('delete-students') && (
+                          <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>
+                        )}
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            ) : (
+              <p>You do not have permission to view students.</p>
+            )}
           </CCardBody>
         </CCard>
       </CCol>

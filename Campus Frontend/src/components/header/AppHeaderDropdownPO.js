@@ -58,7 +58,6 @@ const AppHeaderDropdownPO = () => {
     p_phone: '',
     p_password: '',
     p_photo: '',
-    p_address: '',
   });
   const [isEditing, setIsEditing] = useState(false);
   const [newImage, setNewImage] = useState(null);
@@ -78,7 +77,7 @@ const AppHeaderDropdownPO = () => {
     const fetchPlacementOfficerDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/placement/GetById/${loggedInUserId.replace(/"/g, '')}`);
-        
+
         if (response.data && response.data.placement_officer) {
           const foundPlacementOfficer = response.data.placement_officer;
           setPlacementOfficer(foundPlacementOfficer);
@@ -88,7 +87,6 @@ const AppHeaderDropdownPO = () => {
             p_phone: foundPlacementOfficer.p_phone,
             p_password: foundPlacementOfficer.p_password,
             p_photo: foundPlacementOfficer.p_photo,
-            p_address: foundPlacementOfficer.p_address,
           });
         } else {
           console.error('Placement officer details not found');
@@ -134,14 +132,13 @@ const AppHeaderDropdownPO = () => {
         newFormData.append('p_name', formData.p_name);
         newFormData.append('p_email', formData.p_email);
         newFormData.append('p_phone', formData.p_phone);
-        newFormData.append('p_address', formData.p_address);
 
         if (newImage) {
           newFormData.append('p_photo', newImage);
         }
 
         const response = await axios.put(`http://localhost:5000/api/placement/update/${placement_officer._id}`, newFormData);
-       console.log(response)
+        console.log(response)
         setPlacementOfficer(response.data.placement_officer);
         setModalVisible(false);
         setIsEditing(false);
@@ -225,17 +222,6 @@ const AppHeaderDropdownPO = () => {
                   id="p_phone"
                   name="p_phone"
                   value={formData.p_phone}
-                  onChange={handleInputChange}
-                  readOnly={!isEditing}
-                />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="p_address">Address</CFormLabel>
-                <CFormInput
-                  type="text"
-                  id="p_address"
-                  name="p_address"
-                  value={formData.p_address}
                   onChange={handleInputChange}
                   readOnly={!isEditing}
                 />

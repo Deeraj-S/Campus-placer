@@ -9,6 +9,7 @@ import {
   CForm,
   CFormInput,
   CFormLabel,
+  CFormSelect,
   CModal,
   CModalBody,
   CModalFooter,
@@ -17,7 +18,6 @@ import {
   CRow,
   CTable,
   CTableBody,
-  CTableCaption,
   CTableDataCell,
   CTableHead,
   CTableHeaderCell,
@@ -28,18 +28,61 @@ import { useNavigate } from 'react-router-dom';
 const Tables = () => {
   const [change, setChange] = useState(false)
   const [placement_officer, setPlacement_officer] = useState([]);
+  const [permission, setPermission] = useState([]);
   const navigate = useNavigate();
 
+
+  const roleId = localStorage.getItem('role_id').replace(/['"]+/g, '');
+
   useEffect(() => {
-    axios.get("http://localhost:5000/api/placement/get")
+
+    axios.get(`http://localhost:5000/api/roles/get/${roleId}`)
       .then((res) => {
-        console.log(res)
-        setPlacement_officer(res.data.placement_officer);
+        const roleData = res.data.role;
+        const rolePermissions = res.data.role.permissions
+
+        if (roleData) {
+          setPermission(rolePermissions);
+        } else {
+          console.warn('No role data found for the given role ID.');
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching role data:', err);
+      });
+
+  }, [roleId]);
+
+
+
+  useEffect(() => {
+    if (hasPermission('view-placement-officer')) {
+      axios.get("http://localhost:5000/api/placement/get")
+        .then((res) => {
+          console.log(res)
+          setPlacement_officer(res.data.placement_officer);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [change, permission]);
+
+  const hasPermission = (permissionId) => {
+    return permission.includes(permissionId);
+  };
+
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/roles/get")
+      .then((res) => {
+        setRoles(res.data.roles);
       })
       .catch((err) => {
         console.error(err);
       });
-  }, [change]);
+  }, []);
 
   const Edit = ({ item }) => {
     const [visible, setVisible] = useState(false);
@@ -62,7 +105,7 @@ const Tables = () => {
       formData.append("p_name", newPlacement_officer.p_name)
       formData.append("p_phone", newPlacement_officer.p_phone)
       formData.append("p_email", newPlacement_officer.p_email)
-      formData.append("p_address", newPlacement_officer.p_address)
+      formData.append("role_id", newPlacement_officer.role_id)
       formData.append("p_photo", newPlacement_officer.p_photo)
       axios.put(`http://localhost:5000/api/placement/update/${newPlacement_officer._id}`, formData)
         .then((res) => {
@@ -85,10 +128,11 @@ const Tables = () => {
     };
 
     return (
-      <>
+      <>{hasPermission('edit-placement-officer') &&
         <CButton color="primary" onClick={() => setVisible(!visible)}>
           Edit
         </CButton>
+      }
         <CModal scrollable visible={visible} onClose={() => setVisible(false)}>
           <CModalHeader>
             <CModalTitle>Edit Placement Officer</CModalTitle>
@@ -133,16 +177,17 @@ const Tables = () => {
                 />
 
 
-                <CFormLabel htmlFor="p_address">Address</CFormLabel>
-                <CFormInput
-                  value={newPlacement_officer.p_address}
-                  type="text"
-                  name='p_address'
-                  id="p_address"
-                  placeholder="Edit  address"
-                  onChange={handleChange}
-                  required
-                />
+
+                <CFormLabel htmlFor="role_id">Role</CFormLabel>
+                <CFormSelect name='role_id' id="role_id" onChange={handleChange} >
+                  <option value="">Select Role</option>
+                  {roles.map((item) => {
+                    return (
+                      <option value={item._id}>{item.role_name}</option>
+                    )
+                  })}
+                </CFormSelect>
+
 
                 <CFormLabel htmlFor="p_photo">Profile Photo</CFormLabel>
                 <CFormInput
@@ -191,38 +236,47 @@ const Tables = () => {
         <CCard className="mb-4">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <strong>Placement Officer</strong>
-            <CButton color="info" onClick={() => navigate('/placement/insert')}>Add new PO</CButton>
+            {hasPermission('add-placement-officer') && (
+              <CButton color="info" onClick={() => navigate('/placement/insert')}>Add new PO</CButton>
+            )}
           </CCardHeader>
           <CCardBody>
-            <CTable>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">SI.NO</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Officer Name</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Email</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Phone</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Address</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Image</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Action</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {placement_officer.map((item, index) => (
-                  <CTableRow key={item._id}>
-                    <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
-                    <CTableDataCell>{item.p_name}</CTableDataCell>
-                    <CTableDataCell>{item.p_email}</CTableDataCell>
-                    <CTableDataCell>{item.p_phone}</CTableDataCell>
-                    <CTableDataCell>{item.p_address}</CTableDataCell>
-                    <CTableDataCell><img style={{ height: "100px", width: "100px" }} alt='' src={`http://localhost:5000/api/upload/${item.p_photo}`} /></CTableDataCell>
-                    <CTableDataCell>
-                      <Edit item={item} />
-                      <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>
-                    </CTableDataCell>
+            {hasPermission('view-placement-officer') ? (
+              <CTable>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">SI.NO</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Officer Name</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Email</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Phone</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Role</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Image</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Action</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {placement_officer.map((item, index) => (
+                    <CTableRow key={item._id}>
+                      <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
+                      <CTableDataCell>{item.p_name}</CTableDataCell>
+                      <CTableDataCell>{item.p_email}</CTableDataCell>
+                      <CTableDataCell>{item.p_phone}</CTableDataCell>
+                      <CTableDataCell>{item.role_id.role_name}</CTableDataCell>
+                      <CTableDataCell><img style={{ height: "100px", width: "100px" }} alt='' src={`http://localhost:5000/api/upload/${item.p_photo}`} /></CTableDataCell>
+                      <CTableDataCell>
+                        {hasPermission('edit-placement-officer') && (
+                          <Edit item={item} />
+                        )}
+                        {hasPermission('delete-placement-officer') && (
+                          <CButton color="danger" onClick={() => handleDelete(item._id)}>Delete</CButton>)}
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            ) : (
+              <p>You do not have permission to view placement-officer.</p>
+            )}
           </CCardBody>
         </CCard>
       </CCol>

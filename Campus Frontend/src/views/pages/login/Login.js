@@ -27,6 +27,8 @@ const Login = ({ setRole }) => {
     }
   }, [navigate])
 
+
+
   const [login_details, setLogin_details] = useState({
     email: '',
     password: ''
@@ -47,9 +49,11 @@ const Login = ({ setRole }) => {
           let token = res.data.token
           let rolee = res.data.role
           let id = res.data.id
+          let role_id = res.data.role_id
           localStorage.setItem("token", JSON.stringify(token))
           localStorage.setItem("role", JSON.stringify(rolee))
           localStorage.setItem("id", JSON.stringify(id))
+          localStorage.setItem('role_id', JSON.stringify(role_id))
           setRole(rolee)
           navigate('/')
         }
@@ -63,6 +67,7 @@ const Login = ({ setRole }) => {
       })
 
   }
+
 
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">

@@ -20,6 +20,11 @@ const adminSchema = new Schema({
         type: String,
         required: true
     },
+    role_id: {
+        type: mongoose.Types.ObjectId,
+        ref: "roles"
+
+    },
 
     date: {
         type: Date,

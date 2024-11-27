@@ -16,6 +16,7 @@ import {
 const ApplyJob = () => {
     const { id } = useParams(); // Get job ID from URL
     const [job, setJob] = useState({});
+    const [permission, setPermission] = useState([]);
     const [formData, setFormData] = useState({
         company_name: '',
         job_title: '',
@@ -32,6 +33,7 @@ const ApplyJob = () => {
     });
     const [branch, setBranch] = useState([]);
     const [error, setError] = useState(null); // State to hold error messages
+
 
     useEffect(() => {
         // Fetch job details using job ID
@@ -58,7 +60,7 @@ const ApplyJob = () => {
         }
 
         axios.get(`http://localhost:5000/api/student/GetById/${student_id.replace(/['"]+/g, '')}`)
-       
+
             .then((res) => {
                 const student = res.data.student;
                 setFormData((prevData) => ({
@@ -100,7 +102,7 @@ const ApplyJob = () => {
         e.preventDefault();
         const student_id = localStorage.getItem('id').replace(/['"]+/g, ''); // Remove any extra quotes
         const data = new FormData();
-        data.append('student_id',student_id);
+        data.append('student_id', student_id);
         data.append('job_id', id);
         data.append('resume', formData.resume);
         data.append('YOG', formData.YOG);
@@ -123,7 +125,7 @@ const ApplyJob = () => {
                 if (res.data.success) {
                     alert('Application submitted successfully');
                     window.location.href = 'http://localhost:3000/#/jobs';
-                } 
+                }
                 else {
                     alert(res.data.message);
                 }
@@ -185,7 +187,7 @@ const ApplyJob = () => {
                             name="s_email"
                             id="s_email"
                             placeholder="Student Email"
-                            
+
                         />
                     </div>
                     <div className="mb-3">
@@ -235,7 +237,7 @@ const ApplyJob = () => {
                     <div className="mb-3">
                         <CFormLabel htmlFor="YOG">Year of Graduation</CFormLabel>
                         <CFormInput
-                           // value={formData.YOG}
+                            // value={formData.YOG}
                             type="text"
                             name="YOG"
                             id="YOG"
@@ -247,7 +249,7 @@ const ApplyJob = () => {
                     <div className="mb-3">
                         <CFormLabel htmlFor="CGPA">CGPA</CFormLabel>
                         <CFormInput
-                           // value={formData.CGPA}
+                            // value={formData.CGPA}
                             type="text"
                             name="CGPA"
                             id="CGPA"
@@ -278,7 +280,7 @@ const ApplyJob = () => {
                         </CFormSelect>
                     </div>
                     {/* Read-only student details */}
-                   
+
                     <CButton type="submit" color="primary">Apply</CButton>
                 </CForm>
             </CCardBody>
