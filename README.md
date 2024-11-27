@@ -50,6 +50,7 @@ The **Admin** assigns the following permissions to **Students**:
 Navigate to the **Campus frontend** directory and run the following command to start the frontend application:
 ```bash
 npm start
+```
 
 
 ### 2. Setup Backend
