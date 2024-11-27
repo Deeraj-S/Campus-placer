@@ -42,11 +42,98 @@ The **Admin** assigns the following permissions to **Students**:
 ### Student Responsibilities
 - View available job opportunities.
 - Submit applications for desired jobs.
+  
 
 ## How to Test the Project
 
-Follow these steps to run and test the application:
+### 1. Setup Frontend
+Navigate to the **Campus frontend** directory and run the following command to start the frontend application:
+```bash
+npm start
 
-1. Navigate to the **Campus frontend** directory and run:
-   ```bash
-   npm start
+
+### 2. Setup Backend
+   - Go to the **CampusPlacer backend directory**.
+   - Run the following command:
+     - If you have **Nodemon** installed:
+       ```bash
+       nodemon index.js
+       ```
+     - If you don't have **Nodemon** installed, run:
+       ```bash
+       node index.js
+       ```
+
+### 3. Access the Application
+   - After running the backend, the application will redirect to:
+     ```
+     http://localhost:3000/#/login
+     ```
+
+### 4. Admin Registration
+   - To allow the **admin** to register, change the URL to:
+     ```
+     http://localhost:3000/#/register
+     ```
+   - **Note**: The `/register` URL is restricted to the admin only.
+
+### 5. Admin Login
+   - After registering, **log in as the admin** and perform the following:
+     - Add a **role**.
+     - Add a **student record**.
+     - Add a **placement record**.
+
+### 6. Log Out and Placement Officer Login
+   - After adding the records, **log out** from the top right corner.
+   - **Log in as the placement officer**.
+
+### 7. Placement Officer Operations
+   - As the **placement officer**, follow these steps:
+     - Add a **job opening** and fill in all the company details.
+
+### 8. Student Login
+   - **Log out** and **log in as a student**.
+   - As a **student**, apply for a job from the available openings.
+
+### 9. View Applications
+   - Finally, **log in as the placement officer** again to view the details of students who have applied for the listed jobs.
+
+---
+
+## System Features and Role-based Access
+
+The system is designed with **role-based access control** to ensure specific permissions for each user type. Here's an overview:
+
+### Admin Role
+- The **admin** has full control over the system, including:
+  - Assigning roles to users.
+  - Managing students, branches, placement officers, and job categories.
+  - Adding, editing, or deleting records as needed.
+
+### Placement Officer Role
+- **Placement officers** can:
+  - Manage job categories and postings.
+  - View student details.
+  - Track applications and manage job opportunities.
+
+### Student Role
+- **Students** can:
+  - View available job openings.
+  - Apply for positions they are interested in.
+  - Track their applications' status.
+
+### Dynamic Role-based Access
+- The system uses dynamic **role-based access control (RBAC)**, ensuring that each user type has specific permissions based on their role.
+- This ensures both security and efficient management of records and actions within the system.
+
+---
+
+## Notes
+- Make sure to follow the above steps to simulate the workflow for all user types: admin, placement officer, and student.
+- The system relies on proper role-based access control to ensure that users can only perform actions allowed by their respective roles.
+
+---
+
+
+
+   
